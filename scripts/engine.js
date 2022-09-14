@@ -2,7 +2,7 @@ export class Engine {
   /**
    *
    * @param {*} update This should be a function coming from the Game class that handles updating the state of the game
-   * @param {*} render This should be a function comiong from the Display class which updates everything related to DOM.
+   * @param {*} render This should be a function coming from the Display class which updates everything related to DOM.
    */
   constructor(element, update, render) {
     this.update = update;
@@ -15,6 +15,7 @@ export class Engine {
 
   start() {
     window.requestAnimationFrame(step);
+    this.done = false;
   }
 
   stop() {
@@ -34,7 +35,6 @@ export class Engine {
     } else {
       this.start = undefined;
       this.previousTimeStamp = undefined;
-      this.done = false;
     }
   }
 }
