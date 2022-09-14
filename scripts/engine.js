@@ -8,7 +8,6 @@ export class Engine {
     this.update = update;
     this.render = render;
     this.element = element;
-    this.start = undefined;
     this.previousTimeStamp = undefined;
     this.done = false;
   }
@@ -22,10 +21,10 @@ export class Engine {
   }
 
   step(timestamp) {
-    if (this.start === undefined) {
-      this.start = timestamp;
+    if (!this.previousTimeStamp) {
+      this.previousTimeStamp = timestamp;
     }
-    const elapsed = timestamp - this.start;
+    const elapsed = this.timestamp - this.previousTimeStamp;
     this.update(elapsed);
     this.render();
     previousTimeStamp = timestamp;
