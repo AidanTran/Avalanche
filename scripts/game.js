@@ -1,7 +1,7 @@
-let TARGETMS = 16.6667;
+const TARGETMS = 16.6667;
 class Game {
   constructor() {
-    this.world = new World(0.9, 10, 100);
+    this.world = new World(0.9, 1, 100);
   }
 
   update(timeElapsed) {
@@ -16,6 +16,8 @@ class World {
     this.gravity = gravity;
     this.width = width;
     this.player = new Player(50, 0, 5, 10, 3, 0);
+    this.lavaHeight = -20;
+    this.lavaRiseRate = 0.5;
   }
 
   update(timeElapsed) {
