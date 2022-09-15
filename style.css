@@ -61,3 +61,10 @@ img {
   height: 100%;
   display: none;
 }
+
+#player {
+  position: relative;
+  background-color: white;
+  border: 5px solid black;
+  border-radius: 5%;
+}

@@ -1,22 +1,12 @@
+let TARGETMS = 16.6667;
 class Game {
   constructor() {
-    this.world = new World(0.9, 10, 1000);
-    this.color = 0;
+    this.world = new World(0.9, 10, 100);
   }
 
   update(timeElapsed) {
-    console.log("updating!, time elapsed: ", timeElapsed, "player.x");
-    this.color += parseInt(timeElapsed / 16);
-    this.color = this.color % 360;
-    console.log(this.color);
-    let backgroundString =
-      "linear-gradient( to bottom,hsl(" +
-      this.color +
-      ", 100%, 80%) 0%,hsl(" +
-      (this.color + 60) +
-      ", 100%, 80%) 100%)";
-    $("#live-game").css("background-image", backgroundString);
-    // this.world.update(timeElapsed);
+    // console.log("time elapsed: ", timeElapsed);
+    this.world.update(timeElapsed);
   }
 }
 
@@ -25,12 +15,14 @@ class World {
     this.friction = friction;
     this.gravity = gravity;
     this.width = width;
-    this.player = new Player();
+    this.player = new Player(50, 0, 5, 10, 3, 0);
   }
 
   update(timeElapsed) {
-    // this.player.velocityY -= this.gravity * timeElapsed / ;
-    // this.player.update(timeElapsed);
+    this.player.velocityY -= (this.gravity * timeElapsed) / TARGETMS;
+    this.player.update(timeElapsed);
+    this.collideObject(this.player);
+    this.player.velocityX *= this.friction;
   }
 
   collideObject(entity) {
@@ -68,8 +60,8 @@ class Entity {
 }
 
 class Player extends Entity {
-  constructor() {
-    super(500, 0, 10, 20);
+  constructor(x, y, width, height, velocityX = 0, velocityY = 0) {
+    super(x, y, width, height, velocityX, velocityY);
     this.is_grounded = true;
   }
 }

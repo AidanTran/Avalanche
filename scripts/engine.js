@@ -26,7 +26,7 @@ class Engine {
     }
     const elapsed = timestamp - this.previousTimeStamp;
     this.update(elapsed);
-    this.render();
+    this.render(elapsed);
     this.previousTimeStamp = timestamp;
     if (!this.done) {
       window.requestAnimationFrame(this.step.bind(this));
