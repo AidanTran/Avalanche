@@ -11,6 +11,7 @@ class Display {
 
   render(timeElapsed) {
     $("#player").css("left", this.game.world.player.x + "%");
+    $("#player").css("top", 50 - this.game.world.player.y + "%");
     this.color += parseInt(timeElapsed / 16);
     this.color = this.color % 360;
     let backgroundString =

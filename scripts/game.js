@@ -1,7 +1,7 @@
 const TARGETMS = 16.6667;
 class Game {
   constructor() {
-    this.world = new World(0.9, 1, 100);
+    this.world = new World(0.85, 1, 100);
   }
 
   update(timeElapsed) {
@@ -24,7 +24,7 @@ class World {
     this.player.velocityY -= (this.gravity * timeElapsed) / TARGETMS;
     this.player.update(timeElapsed);
     this.collideObject(this.player);
-    this.player.velocityX *= this.friction;
+    this.player.velocityX *= (this.friction * timeElapsed) / TARGETMS;
   }
 
   collideObject(entity) {
@@ -41,6 +41,7 @@ class World {
       // Check floor
       entity.y = 0;
       entity.velocityY = 0;
+      entity.isGrounded = true;
     }
   }
 }
@@ -55,15 +56,30 @@ class Entity {
     this.velocityY = velocityY;
   }
 
-  update() {
-    this.x += this.velocityX;
-    this.y += this.velocityY;
+  update(timeElapsed) {
+    this.x += (this.velocityX * timeElapsed) / TARGETMS;
+    this.y += (this.velocityY * timeElapsed) / TARGETMS;
   }
 }
 
 class Player extends Entity {
   constructor(x, y, width, height, velocityX = 0, velocityY = 0) {
     super(x, y, width, height, velocityX, velocityY);
-    this.is_grounded = true;
+    this.isGrounded = true;
+  }
+
+  jump() {
+    if (this.isGrounded) {
+      this.velocityY += 10;
+      console.log(this.velocityY);
+      this.isGrounded = false;
+    }
+    console.log(this);
+  }
+  moveLeft() {
+    this.velocityX -= 0.5;
+  }
+  moveRight() {
+    this.velocityX += 0.5;
   }
 }
