@@ -1,15 +1,13 @@
-import Engine from "./engine.js";
-
-let Engine = Engine();
+let myGame = new Game();
+let myEngine = new Engine(myGame.update.bind(myGame), () => {
+  return;
+});
 
 let liveGame = false;
 
-let height = 0;
-
-let player = {};
-
 $(".start-button").on("click", function () {
   liveGame = true;
+  myEngine.start();
   $("#live-game").css("display", "block");
   $("#menu").css("display", "none");
 });

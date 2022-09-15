@@ -1,19 +1,18 @@
-export class Engine {
+class Engine {
   /**
    *
    * @param {*} update This should be a function coming from the Game class that handles updating the state of the game
    * @param {*} render This should be a function coming from the Display class which updates everything related to DOM.
    */
-  constructor(element, update, render) {
+  constructor(update, render) {
     this.update = update;
     this.render = render;
-    this.element = element;
     this.previousTimeStamp = undefined;
     this.done = false;
   }
 
   start() {
-    window.requestAnimationFrame(step);
+    window.requestAnimationFrame(this.step.bind(this));
     this.done = false;
   }
 
@@ -22,15 +21,15 @@ export class Engine {
   }
 
   step(timestamp) {
-    if (!this.previousTimeStamp) {
+    if (this.previousTimeStamp === undefined) {
       this.previousTimeStamp = timestamp;
     }
-    const elapsed = this.timestamp - this.previousTimeStamp;
+    const elapsed = timestamp - this.previousTimeStamp;
     this.update(elapsed);
     this.render();
-    previousTimeStamp = timestamp;
-    if (!done) {
-      window.requestAnimationFrame(step);
+    this.previousTimeStamp = timestamp;
+    if (!this.done) {
+      window.requestAnimationFrame(this.step.bind(this));
     } else {
       this.start = undefined;
       this.previousTimeStamp = undefined;

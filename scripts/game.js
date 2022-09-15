@@ -1,11 +1,22 @@
 class Game {
   constructor() {
     this.world = new World(0.9, 10, 1000);
+    this.color = 0;
   }
 
   update(timeElapsed) {
-    print("updating!, time elapsed: ", timeElapsed, "player.x");
-    this.world.update(timeElapsed);
+    console.log("updating!, time elapsed: ", timeElapsed, "player.x");
+    this.color += parseInt(timeElapsed / 16);
+    this.color = this.color % 360;
+    console.log(this.color);
+    let backgroundString =
+      "linear-gradient( to bottom,hsl(" +
+      this.color +
+      ", 100%, 80%) 0%,hsl(" +
+      (this.color + 60) +
+      ", 100%, 80%) 100%)";
+    $("#live-game").css("background-image", backgroundString);
+    // this.world.update(timeElapsed);
   }
 }
 
