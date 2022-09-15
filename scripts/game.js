@@ -1,13 +1,28 @@
-const TARGETMS = 16.6667;
+/**
+ * Currently the game only holds a world, and an update function which calls update on world.
+ */
+const TARGETMS = 16.6667; // const variable. 16.6667 is 60 fps, this is for force calculations when framerate is unstable.
+const FRICTION = 0.85; // How fast player.velocityX shrinks.
+const GRAVITY = 1; // How fast player falls.
+const WORLDWIDTH = 100;
 class Game {
   constructor() {
-    this.world = new World(0.85, 1, 100);
+    this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
   }
 
-  update(timeElapsed) {
-    // console.log("time elapsed: ", timeElapsed);
-    this.world.update(timeElapsed);
+  update(timeElapsed, controller) {
+    this.world.update(timeElapsed, controller);
   }
+}
+
+const PLAYERWIDTH = 5;
+const PLAYERHEIGHT = 10;
+const PLAYERMOVESPEED = 0.5;
+const INITALLAVAHEIGHT = -30;
+const LAVARISERATE = 0.5;
+
+function adjustForTime(value, timeElapsed) {
+  return (value * timeElapsed) / TARGETMS;
 }
 
 class World {
@@ -15,19 +30,32 @@ class World {
     this.friction = friction;
     this.gravity = gravity;
     this.width = width;
-    this.player = new Player(50, 0, 5, 10, 3, 0);
-    this.lavaHeight = -20;
-    this.lavaRiseRate = 0.5;
+    this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
+    this.lavaHeight = INITALLAVAHEIGHT;
+    this.lavaRiseRate = LAVARISERATE;
   }
 
-  update(timeElapsed) {
-    this.player.velocityY -= (this.gravity * timeElapsed) / TARGETMS;
-    this.player.update(timeElapsed);
-    this.collideObject(this.player);
-    this.player.velocityX *= (this.friction * timeElapsed) / TARGETMS;
+  update(timeElapsed, controller) {
+    // Handles all entities movement and collisions.
+    // Handles movement of player from controller.
+    if (controller.left) {
+      myGame.world.player.moveLeft(timeElapsed);
+    }
+    if (controller.right) {
+      myGame.world.player.moveRight(timeElapsed);
+    }
+    if (controller.up) {
+      myGame.world.player.jump();
+    }
+
+    this.player.velocityY -= adjustForTime(this.gravity, timeElapsed); // Handles gravity, adjusted for time.
+    this.player.update(timeElapsed); // Actually calculates player move
+    this.collideObject(this.player); // Uses player's new position to see if it collided with the world boundary.
+    this.player.velocityX *= adjustForTime(this.friction, timeElapsed); // Reduces the players speed using Friction, adjusted for time.
   }
 
   collideObject(entity) {
+    // Takes an entity as a parameter and sets it's position and velocity so that it can't escape the world bounds.
     if (entity.x < 0) {
       // Check left of world
       entity.x = 0;
@@ -57,8 +85,9 @@ class Entity {
   }
 
   update(timeElapsed) {
-    this.x += (this.velocityX * timeElapsed) / TARGETMS;
-    this.y += (this.velocityY * timeElapsed) / TARGETMS;
+    // Adjusts the entities' x and y position from its velocity, adjusted for time.
+    this.x += adjustForTime(this.velocityX, timeElapsed);
+    this.y += adjustForTime(this.velocityY, timeElapsed);
   }
 }
 
@@ -70,16 +99,15 @@ class Player extends Entity {
 
   jump() {
     if (this.isGrounded) {
-      this.velocityY += 10;
-      console.log(this.velocityY);
+      // Should only be able to jump if grounded.
+      this.velocityY += 10; // Do not need to adjust for time here, jumping is an impulse.
       this.isGrounded = false;
     }
-    console.log(this);
   }
-  moveLeft() {
-    this.velocityX -= 0.5;
+  moveLeft(timeElapsed) {
+    this.velocityX -= adjustForTime(PLAYERMOVESPEED, timeElapsed);
   }
-  moveRight() {
-    this.velocityX += 0.5;
+  moveRight(timeElapsed) {
+    this.velocityX += adjustForTime(PLAYERMOVESPEED, timeElapsed);
   }
 }

@@ -1,4 +1,6 @@
-let liveGame = false;
+/**
+ * ALL OF THIS IS TEMPORARY FOR GAME AND CONTROLLER DEBUGGING PURPOSES ONLY AT THE MOMENT
+ */
 
 class Display {
   constructor(game) {
@@ -10,8 +12,12 @@ class Display {
   }
 
   render(timeElapsed) {
-    $("#player").css("left", this.game.world.player.x + "%");
-    $("#player").css("top", 50 - this.game.world.player.y + "%");
+    // This is what moves the player. The mallow's current position is relative to the top left corner of the live-game html area
+    // This area is currently the whole screen.
+    $("#player").css("left", this.game.world.player.x + "%"); // For every unit in game space, we move the player another percent of the screen.
+    $("#player").css("top", 50 - this.game.world.player.y + "%"); // This goes for the y direction too, currenty 1 game unit = 1% screen space relative to direction.
+
+    // Cool fancy colors to look at based on time.
     this.color += parseInt(timeElapsed / 16);
     this.color = this.color % 360;
     let backgroundString =
