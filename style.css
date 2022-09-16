@@ -79,3 +79,10 @@ img {
 .left-skew {
   transform: rotate(-15deg);
 }
+
+#fallingblock {
+  position: relative;
+  background-color: blue; /*TODO randomize color */
+  border: 5px solid black;
+  border-radius: 5%;
+}

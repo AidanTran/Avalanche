@@ -20,6 +20,14 @@ const PLAYERHEIGHT = 10;
 const PLAYERMOVESPEED = 0.5;
 const INITALLAVAHEIGHT = -30;
 const LAVARISERATE = 0.5;
+// 3 block sizes
+const LRGBLOCKWIDTH = 30;
+const LRGBLOCKHEIGHT = 30;
+const MBLOCKWIDTH = 20;
+const MBLOCKHEIGHT = 20;
+const SMBLOCKWIDTH = 10;
+const SMBLOCKHEIGHT = 10;
+const BLOCKMOVESPEED = 0.5; //can change just copied player
 
 function adjustForTime(value, timeElapsed) {
   return (value * timeElapsed) / TARGETMS;
@@ -31,6 +39,7 @@ class World {
     this.gravity = gravity;
     this.width = width;
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
+    this.fallingblock = new FallingBlock(WORLDWIDTH / 2, 0, SMBLOCKWIDTH, SMBLOCKHEIGHT); /*TODO randomize block size*/
     this.lavaHeight = INITALLAVAHEIGHT;
     this.lavaRiseRate = LAVARISERATE;
   }
@@ -57,6 +66,11 @@ class World {
      * List of actively moving
      */
     this.player.velocityX *= adjustForTime(this.friction, timeElapsed); // Reduces the players speed using Friction, adjusted for time.
+  
+    //always have a block falling until hits ground 
+    this.fallingblock.velocityY -= adjustForTime(this.gravity, timeElapsed);
+    this.fallingblock.update(timeElapsed);
+    myGame.world.fallingblock.fall();
   }
 
   collideObject(entity) {
@@ -114,5 +128,20 @@ class Player extends Entity {
   }
   moveRight(timeElapsed) {
     this.velocityX += adjustForTime(PLAYERMOVESPEED, timeElapsed);
+  }
+}
+
+class FallingBlock extends Entity {
+  constructor(x, y, width, height, velocityX = 0, velocityY = 0) {
+    super(x, y, width, height, velocityX, velocityY);
+    this.isGrounded=false;
+  }
+
+  fall() {
+    if (!this.isGrounded) {
+      // Should only fall if not grounded.
+      this.velocityY -= 10; 
+      this.isGrounded = true;
+    }
   }
 }
