@@ -10,8 +10,8 @@
  */
 
 let myGame = new Game();
-let myDisplay = new Display(myGame);
 let myController = new Controller();
+let myDisplay = new Display(myGame, myController);
 
 let keyDownUp = function (event) {
   myController.keyDownUp(event.type, event.keyCode);
@@ -19,7 +19,7 @@ let keyDownUp = function (event) {
 
 let update = function (timeElapsed) {
   myGame.update(timeElapsed, myController);
-  myDisplay.render(timeElapsed);
+  myDisplay.render(myController);
 };
 
 let myEngine = new Engine(update);
