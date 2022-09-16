@@ -28,7 +28,7 @@ const MBLOCKWIDTH = 20;
 const MBLOCKHEIGHT = 20;
 const SMBLOCKWIDTH = 10;
 const SMBLOCKHEIGHT = 10;
-const BLOCKMOVESPEED = 0.5; //can change just copied player
+const BLOCKMOVESPEED = -1; //can change just copied player
 
 function adjustForTime(value, timeElapsed) {
   return (value * timeElapsed) / TARGETMS;
@@ -42,10 +42,25 @@ class World {
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
     this.lavaHeight = INITALLAVAHEIGHT;
     this.lavaRiseRate = LAVARISERATE;
-    
-    this.fallingblock = new FallingBlock(WORLDWIDTH / 2, 0, SMBLOCKWIDTH, SMBLOCKHEIGHT); /*TODO randomize block size*/
-    this.stationaryBoxList = [this.fallingblock];
-    this.stationaryLen = 0;
+    this.fallingBoxes = new Set([0, 1]);
+    this.boxList = [
+      new FallingBlock(
+        WORLDWIDTH / 2 - 20,
+        50,
+        SMBLOCKWIDTH,
+        SMBLOCKHEIGHT,
+        0,
+        BLOCKMOVESPEED
+      ),
+      new FallingBlock(
+        WORLDWIDTH / 2 + 20,
+        80,
+        MBLOCKWIDTH,
+        MBLOCKHEIGHT,
+        0,
+        BLOCKMOVESPEED
+      ),
+    ];
   }
 
   update(timeElapsed, controller) {
@@ -61,29 +76,35 @@ class World {
       myGame.world.player.jump();
     }
 
-    this.stationaryLen = this.stationaryBoxList.length;
     this.player.velocityY -= adjustForTime(this.gravity, timeElapsed); // Handles gravity, adjusted for time.
+    this.player.velocityX *= this.friction ** (timeElapsed / TARGETMS); // Reduces the players speed using Friction, adjusted for time.
     this.player.update(timeElapsed); // Actually calculates player move
-    this.collideObject(this.player); // Uses player's new position to see if it collided with the world boundary.
+    this.playerCollideWorld(this.player); // Uses player's new position to see if it collided with the world boundary.
     /**
      * while loop over list of boxes.
      * Determine whether player collides with any of those boxes. Update player values.
-     * List of actively moving
      */
-    for (let i = 0; i<this.stationaryLen; i++){
-      this.collideBlock(this.stationaryBoxList[i]);
+
+    for (let i = 0; i < this.boxList.length; i++) {
+      // always have a block falling until hits ground
+      this.boxList[i].update(timeElapsed);
+      this.playerCollideBlock(this.boxList[i]);
     }
-    this.player.velocityX *= adjustForTime(this.friction, timeElapsed); // Reduces the players speed using Friction, adjusted for time.
-  
-    //always have a block falling until hits ground
-    if (!this.fallingblock.isGrounded){
-      this.fallingblock.velocityY -= adjustForTime(this.gravity, timeElapsed);
-      this.fallingblock.update(timeElapsed);
-    }
-    myGame.world.fallingblock.fall();
+
+    this.fallingBoxes.forEach((idx) => {
+      for (let i = 0; i < this.boxList.length; i++) {
+        if (this.fallingBoxes.has(i)) {
+          continue;
+        }
+        this.boxCollideBox(idx, i);
+      }
+      if (this.boxList[idx].isGrounded) {
+        this.fallingBoxes.delete(idx);
+      }
+    });
   }
 
-  collideObject(entity) {
+  playerCollideWorld(entity) {
     // Takes an entity as a parameter and sets it's position and velocity so that it can't escape the world bounds.
     if (entity.x < 0) {
       // Check left of world
@@ -102,27 +123,33 @@ class World {
     }
   }
 
-  collideBlock(block) {
+  playerCollideBlock(block) {
     const playerRightX = this.player.x + this.player.width; //rightmost x cord (player)
     const playerTopY = this.player.y + this.player.height; ////topmost y cord (player)
     const blockRightX = block.x + block.width; //rightmost x cord (block)
     const blockTopY = block.y + block.height; //topmost y cord (block)
 
     //player is on left side of block
-    if (playerRightX > block.x  && this.player.x < block.x && this.player.y < blockTopY && playerTopY > block.y){
+    if (
+      playerRightX > block.x &&
+      this.player.x < block.x &&
+      this.player.y < blockTopY &&
+      playerTopY > block.y
+    ) {
       /*
       The following two if statements below is logic as to wether or not the player should favor the roof of the block 
       or the side of the block. This is needed because if the player collided in the corner. It's difficult
       to tell if he should be pushed LEFT or pushed UP.
       This is done this by subtracting cord points and determining if the block's area is more left or more up 
       */
-    
-      if(playerRightX - block.x < blockTopY - this.player.y){ 
+      if (
+        this.player.velocityX > 0 && // We ONLY favor the left if we are currently moving right AND
+        this.player.velocityX > -1 * this.player.velocityY // If our velocity traveling right is greater than our velocity traveling down.
+      ) {
         //more left favored
         this.player.x = block.x - this.player.width;
         this.player.velocityX = 0;
-        }
-      else{ 
+      } else {
         //more up favored
         this.player.y = blockTopY;
         this.player.velocityY = 0;
@@ -130,13 +157,20 @@ class World {
       }
     }
     //same logic but now dealing with right side collisions
-    else if (this.player.x < blockRightX && playerRightX > blockRightX && this.player.y < blockTopY && playerTopY > block.y){
-      if(Math.abs(this.player.x - blockRightX) < blockTopY - this.player.y){
+    else if (
+      this.player.x < blockRightX &&
+      playerRightX > blockRightX &&
+      this.player.y < blockTopY &&
+      playerTopY > block.y
+    ) {
+      if (
+        this.player.velocityX < 0 &&
+        this.player.velocityX < this.player.velocityY
+      ) {
         //right side favored
         this.player.x = blockRightX;
         this.player.velocityX = 0;
-        }
-      else{
+      } else {
         //Top side favored
         this.player.y = blockTopY;
         this.player.velocityY = 0;
@@ -144,15 +178,22 @@ class World {
       }
     }
     //If the player is standing on the top of the block flat. no corners involved. It will be grounded on the block
-    else if (this.player.x > block.x && playerRightX < blockRightX && this.player.y < blockTopY && playerTopY > block.y){
+    else if (
+      this.player.x > block.x &&
+      playerRightX < blockRightX &&
+      this.player.y < blockTopY &&
+      playerTopY > block.y
+    ) {
       this.player.y = blockTopY;
       this.player.velocityY = 0;
       this.player.isGrounded = true;
     }
   }
+
+  boxCollideBox(idx1, idx2) {
+    return;
+  }
 }
-
-
 
 class Entity {
   constructor(x, y, width, height, velocityX = 0, velocityY = 0) {
@@ -195,19 +236,17 @@ class Player extends Entity {
 class FallingBlock extends Entity {
   constructor(x, y, width, height, velocityX = 0, velocityY = 0) {
     super(x, y, width, height, velocityX, velocityY);
-    if (y <= 0){
-      this.isGrounded=false;
-    }
-    else{
-      this.isGrounded=true;
-    }
   }
 
-  fall() {
+  update(timeElapsed) {
+    // Adjusts the entities' x and y position from its velocity, adjusted for time.
     if (!this.isGrounded) {
-      // Should only fall if not grounded.
-      this.velocityY -= 10; 
-      this.isGrounded = true;
+      this.y += adjustForTime(this.velocityY, timeElapsed);
+      if (this.y <= 0) {
+        this.isGrounded = true;
+        this.velocityY = 0;
+        this.y = 0;
+      }
     }
   }
 }
