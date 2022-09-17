@@ -6,6 +6,8 @@ body {
   min-height: 100%;
   background: #fff;
   color: #000;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 /* sets the body height of the browser, so that backgrounds and div heights work correctly. Color and background will almost certainly be altered; they are just placeholders */
 
@@ -67,10 +69,28 @@ img {
   background-color: white;
   border: 5px solid black;
   border-radius: 5%;
+  transition: transform 0.1s ease-in-out;
 }
 
-#boxes{
+.right-skew {
+  transform: rotate(15deg);
+}
+
+.left-skew {
+  transform: rotate(-15deg);
+}
+
+#fallingblock {
+  position: relative;
+  background-color: blue; /*TODO randomize color */
+  border: 5px solid black;
+  border-radius: 5%;
+}
+
+.boxes{
   position: relative;
   background-color: red;
-  border: 3px solid #000;
+  border: 5px solid black;
+  top: 40%;
+  border-radius: 5%;
 }
