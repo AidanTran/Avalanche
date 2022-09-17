@@ -86,3 +86,11 @@ img {
   border: 5px solid black;
   border-radius: 5%;
 }
+
+.boxes{
+  position: relative;
+  background-color: red;
+  border: 5px solid black;
+  top: 40%;
+  border-radius: 5%;
+}
