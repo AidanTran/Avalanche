@@ -68,3 +68,9 @@ img {
   border: 5px solid black;
   border-radius: 5%;
 }
+
+#boxes{
+  position: relative;
+  background-color: red;
+  border: 3px solid #000;
+}

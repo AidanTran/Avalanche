@@ -5,6 +5,8 @@ const TARGETMS = 16.6667; // const variable. 16.6667 is 60 fps, this is for forc
 const FRICTION = 0.85; // How fast player.velocityX shrinks.
 const GRAVITY = 1; // How fast player falls.
 const WORLDWIDTH = 100;
+
+let sationaryBoxList = [];
 class Game {
   constructor() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
@@ -21,6 +23,8 @@ const PLAYERMOVESPEED = 0.5;
 const INITALLAVAHEIGHT = -30;
 const LAVARISERATE = 0.5;
 
+const boxHeight = Math.random() % 100;
+
 function adjustForTime(value, timeElapsed) {
   return (value * timeElapsed) / TARGETMS;
 }
@@ -31,6 +35,7 @@ class World {
     this.gravity = gravity;
     this.width = width;
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
+    this.stationaryBox = new stationaryBox(WORLDWIDTH / 2,boxHeight , )
     this.lavaHeight = INITALLAVAHEIGHT;
     this.lavaRiseRate = LAVARISERATE;
   }
@@ -109,5 +114,12 @@ class Player extends Entity {
   }
   moveRight(timeElapsed) {
     this.velocityX += adjustForTime(PLAYERMOVESPEED, timeElapsed);
+  }
+}
+
+class stationaryBox extends Entity {
+  constructor(x, y, width, height, velocityX = 0, velocityY = 0){
+    super(x, y, width, height, velocityX = 0, velocityY = 0)
+    this.isGrounded = true;
   }
 }

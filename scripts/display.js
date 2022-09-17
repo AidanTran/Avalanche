@@ -16,7 +16,7 @@ class Display {
     // This area is currently the whole screen.
     $("#player").css("left", this.game.world.player.x + "%"); // For every unit in game space, we move the player another percent of the screen.
     $("#player").css("top", 50 - this.game.world.player.y + "%"); // This goes for the y direction too, currenty 1 game unit = 1% screen space relative to direction.
-
+    $("#boxes").css();
     // Cool fancy colors to look at based on time.
     this.color += parseInt(timeElapsed / 16);
     this.color = this.color % 360;
