@@ -66,6 +66,7 @@ class World {
     this.fallingblock.velocityY -= adjustForTime(this.gravity, timeElapsed);
     this.fallingblock.update(timeElapsed);
     myGame.world.fallingblock.fall();
+    //TODO add to array of all blocks to keep track of location, randomize when to start next block to fall
   }
 
   collideObject(entity) {
