@@ -40,11 +40,10 @@ class World {
     this.gravity = gravity;
     this.width = width;
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
-    this.fallingblock = new FallingBlock(WORLDWIDTH / 2, 0, SMBLOCKWIDTH, SMBLOCKHEIGHT); /*TODO randomize block size*/
     this.lavaHeight = INITALLAVAHEIGHT;
     this.lavaRiseRate = LAVARISERATE;
     
-    this.stationaryBox = new FallingBlock(WORLDWIDTH / 2, 0, SMBLOCKWIDTH, SMBLOCKHEIGHT);
+    this.fallingblock = new FallingBlock(WORLDWIDTH / 2, 0, SMBLOCKWIDTH, SMBLOCKHEIGHT); /*TODO randomize block size*/
     this.stationaryBoxList = [this.fallingblock];
     this.stationaryLen = 0;
   }
@@ -193,12 +192,6 @@ class Player extends Entity {
   }
 }
 
-class stationaryBox extends Entity {
-  constructor(x, y, width, height, velocityX = 0, velocityY = 0){
-    super(x, y, width, height, velocityX = 0, velocityY = 0)
-    this.isGrounded = true;
-  }
-}
 class FallingBlock extends Entity {
   constructor(x, y, width, height, velocityX = 0, velocityY = 0) {
     super(x, y, width, height, velocityX, velocityY);

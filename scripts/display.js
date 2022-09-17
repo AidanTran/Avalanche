@@ -13,12 +13,15 @@ class Display {
   }
 
   render(controller) {
-    const UpdatedStationaryLen = this.game.world.stationaryLen;
+    //UpdatedStationary is updated when something is added to the stationaryList
+    let UpdatedStationaryLen = this.game.world.stationaryLen;
     // This is what moves the player. The mallow's current position is relative to the top left corner of the live-game html area
     // This area is currently the whole screen.
     $("#player").css("left", this.game.world.player.x + "%"); // For every unit in game space, we move the player another percent of the screen.
     $("#player").css("top", 50 - this.game.world.player.y + "%"); // This goes for the y direction too, currenty 1 game unit = 1% screen space relative to direction.
+    
     while (UpdatedStationaryLen > this.stationaryLen){
+      //creates new divs per block in the world
       this.stationaryLen += 1;
       $('<div class="boxes" id='+this.stationaryLen.toString()+'></div>').appendTo('#live-game');
       const idStr = "#"+this.stationaryLen.toString();
