@@ -60,6 +60,11 @@ class World {
     this.player.velocityY -= adjustForTime(this.gravity, timeElapsed); // Handles gravity, adjusted for time.
     this.player.update(timeElapsed); // Actually calculates player move
     this.collideObject(this.player); // Uses player's new position to see if it collided with the world boundary.
+    /**
+     * while loop over list of boxes.
+     * Determine whether player collides with any of those boxes. Update player values.
+     * List of actively moving
+     */
     this.player.velocityX *= adjustForTime(this.friction, timeElapsed); // Reduces the players speed using Friction, adjusted for time.
   
     //always have a block falling until hits ground 
