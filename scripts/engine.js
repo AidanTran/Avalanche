@@ -14,8 +14,12 @@ class Engine {
     this.done = false;
   }
 
-  stop() {
+  pause() {
     this.done = true;
+  }
+
+  restart() {
+    window.location.reload();
   }
 
   /**

@@ -128,6 +128,7 @@ class World {
     const playerTopY = this.player.y + this.player.height; ////topmost y cord (player)
     const blockRightX = block.x + block.width; //rightmost x cord (block)
     const blockTopY = block.y + block.height; //topmost y cord (block)
+    const blockBottomY = block.height - block.y; //bottommost y cord (block)
 
     //player is on left side of block
     if (
@@ -187,6 +188,17 @@ class World {
       this.player.velocityY = 0;
       this.player.isGrounded = true;
     }
+    /** 
+    // bad attempt at collision control for player under the block bc i don't rly get how the coords work... TODO fix this lmao
+    else if (
+      playerTopY === blockBottomY &&
+      player.y < block.y
+    ) {
+      this.player.y = blockBottomY;
+      this.player.velocityY = 0;
+      this.player.isGrounded = false;
+    }
+    **/
   }
 
   boxCollideBox(idx1, idx2) {
@@ -247,6 +259,24 @@ class Player extends Entity {
 }
 
 class FallingBlock extends Entity {
+  constructor(x, y, width, height, velocityX = 0, velocityY = 0) {
+    super(x, y, width, height, velocityX, velocityY);
+    this.isGrounded = false;
+  }
+
+  update(timeElapsed) {
+    // Adjusts the entities' x and y position from its velocity, adjusted for time.
+    if (!this.isGrounded) {
+      this.y += adjustForTime(this.velocityY, timeElapsed);
+      if (this.y <= 0) {
+        this.isGrounded = true;
+        this.velocityY = 0;
+        this.y = 0;
+      }
+    }
+  }
+}
+class Lava extends Entity {
   constructor(x, y, width, height, velocityX = 0, velocityY = 0) {
     super(x, y, width, height, velocityX, velocityY);
     this.isGrounded = false;

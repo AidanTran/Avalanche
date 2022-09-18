@@ -51,6 +51,12 @@ $(".start-button").on("click", function () {
   $("#menu").css("display", "none");
 });
 
-$(".stop-button").on("click", function () {
-  myEngine.stop();
+$(".pause-button").on("click", function () {
+  myEngine.pause();
 });
+
+$(".redo-button").on("click", function () {
+  myEngine.restart();
+});
+
+
