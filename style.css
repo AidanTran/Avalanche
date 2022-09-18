@@ -41,9 +41,17 @@ body {
 
 .boxes {
   position: absolute;
+  background-color: blue;
+  border: min(5px, 2vw) solid black;
+  border-radius: 5%;
+}
+
+.lava {
+  position: absolute;
   background-color: red;
   border: min(5px, 2vw) solid black;
   border-radius: 5%;
+
 }
 
 .start-button {

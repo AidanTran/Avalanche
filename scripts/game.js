@@ -5,6 +5,7 @@ const TARGETMS = 16.6667; // const variable. 16.6667 is 60 fps, this is for forc
 const FRICTION = 0.85; // How fast player.velocityX shrinks.
 const GRAVITY = 1; // How fast player falls.
 const WORLDWIDTH = 100;
+const WORLDHEIGHT = 90;
 
 class Game {
   constructor() {
@@ -39,9 +40,8 @@ class World {
     this.friction = friction;
     this.gravity = gravity;
     this.width = width;
+    this.lava = new Lava(WORLDWIDTH, INITALLAVAHEIGHT, WORLDWIDTH, WORLDHEIGHT / 3, 0, LAVARISERATE);
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
-    this.lavaHeight = INITALLAVAHEIGHT;
-    this.lavaRiseRate = LAVARISERATE;
     this.fallingBoxes = new Set([0, 1]);
     this.boxList = [
       new FallingBlock(
@@ -79,6 +79,7 @@ class World {
     this.player.velocityY -= adjustForTime(this.gravity, timeElapsed); // Handles gravity, adjusted for time.
     this.player.velocityX *= this.friction ** (timeElapsed / TARGETMS); // Reduces the players speed using Friction, adjusted for time.
     this.player.update(timeElapsed); // Actually calculates player move
+    this.lava.update(timeElapsed); // Calculate lava move
     this.playerCollideWorld(this.player); // Uses player's new position to see if it collided with the world boundary.
     /**
      * while loop over list of boxes.
@@ -277,20 +278,12 @@ class FallingBlock extends Entity {
   }
 }
 class Lava extends Entity {
-  constructor(x, y, width, height, velocityX = 0, velocityY = 0) {
+  constructor(x, y, width, height, velocityX, velocityY) {
     super(x, y, width, height, velocityX, velocityY);
     this.isGrounded = false;
   }
-
   update(timeElapsed) {
-    // Adjusts the entities' x and y position from its velocity, adjusted for time.
-    if (!this.isGrounded) {
-      this.y += adjustForTime(this.velocityY, timeElapsed);
-      if (this.y <= 0) {
-        this.isGrounded = true;
-        this.velocityY = 0;
-        this.y = 0;
-      }
+    this.y += adjustForTime(this.velocityY, timeElapsed);
+    this.x += adjustForTime(this.velocityX, timeElapsed);
     }
-  }
 }
