@@ -45,8 +45,8 @@ class World {
     this.fallingBoxes = new Set([0, 1]);
     this.boxList = [
       new FallingBlock(
-        WORLDWIDTH / 2 - 20,
-        50,
+        WORLDWIDTH / 2 + 20,
+        0,
         SMBLOCKWIDTH,
         SMBLOCKHEIGHT,
         0,
@@ -139,8 +139,7 @@ class World {
       /*
       The following two if statements below is logic as to wether or not the player should favor the roof of the block 
       or the side of the block. This is needed because if the player collided in the corner. It's difficult
-      to tell if he should be pushed LEFT or pushed UP.
-      This is done this by subtracting cord points and determining if the block's area is more left or more up 
+      to tell if he should be pushed LEFT or pushed UP. 
       */
       if (
         this.player.velocityX > 0 && // We ONLY favor the left if we are currently moving right AND
@@ -191,6 +190,20 @@ class World {
   }
 
   boxCollideBox(idx1, idx2) {
+    //idx1 falling
+    //idx2 grounded
+    const falling = this.boxList[idx1];
+    const grounded = this.boxList[idx2];
+
+    if (falling.y < grounded.y + grounded.height){
+      if (falling.x < grounded.x + grounded.width ||
+        falling.x + falling.width > grounded.x
+      ){
+        falling.isGrounded = true;
+        falling.y = grounded.y + grounded.height;
+      }
+    }
+
     return;
   }
 }
@@ -236,6 +249,7 @@ class Player extends Entity {
 class FallingBlock extends Entity {
   constructor(x, y, width, height, velocityX = 0, velocityY = 0) {
     super(x, y, width, height, velocityX, velocityY);
+    this.isGrounded = false;
   }
 
   update(timeElapsed) {
