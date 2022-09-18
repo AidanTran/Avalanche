@@ -199,7 +199,6 @@ class World {
       if (falling.x < grounded.x + grounded.width ||
         falling.x + falling.width > grounded.x
       ){
-        console.log("dx");
         falling.isGrounded = true;
         falling.y = grounded.y + grounded.height;
       }
