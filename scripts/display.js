@@ -14,7 +14,7 @@ class Display {
   }
 
   render(controller) {
-    //UpdatedStationary is updated when something is added to the stationaryList
+    //updatednumBoxes is updated when something is added to the boxlist
     let updatednumBoxes = this.game.world.boxList.length;
     // This is what moves the player. The mallow's current position is relative to the top left corner of the live-game html area
     // This area is currently the whole screen.
