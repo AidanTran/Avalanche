@@ -133,7 +133,8 @@ class World {
 
   moveCamera(gravity, timeElapsed){
     console.log("move camera player: "+player.velocityY);
-    ground-=10;
+    ground-=10; //this is the offset used for jump
+    //TODO ground is lost... if you don't land on a block you fall through
 
     this.boxList.forEach(box => {
       console.log("before box: "+box.velocityY);
