@@ -7,7 +7,7 @@ const GRAVITY = 1; // How fast player falls.
 const WORLDWIDTH = 100;
 const WORLDHEIGHT = 90;
 let COUNTER = 0;
-let IDXCOUNT = 2;
+let IDXCOUNT = 0;
 
 class Game {
   constructor() {
@@ -31,9 +31,7 @@ const MBLOCKWIDTH = 20;
 const MBLOCKHEIGHT = 20;
 const SMBLOCKWIDTH = 10;
 const SMBLOCKHEIGHT = 10;
-const BLOCKMOVESPEED = -1;
-
-ground = 0;
+const BLOCKMOVESPEED = -1; //can change just copied player
 
 function adjustForTime(value, timeElapsed) {
   return (value * timeElapsed) / TARGETMS;
@@ -53,24 +51,24 @@ class World {
       LAVARISERATE
     );
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
-    this.fallingBoxes = new Set([0, 1]);
+    this.fallingBoxes = new Set();
     this.boxList = [
-      new FallingBlock(
-        WORLDWIDTH / 2 + 20,
-        0,
-        SMBLOCKWIDTH,
-        SMBLOCKHEIGHT,
-        0,
-        BLOCKMOVESPEED
-      ),
-      new FallingBlock(
-        WORLDWIDTH / 2 - 20,
-        80,
-        MBLOCKWIDTH,
-        MBLOCKHEIGHT,
-        0,
-        BLOCKMOVESPEED
-      ),
+      // new FallingBlock(
+      //   WORLDWIDTH / 2 + 20,
+      //   0,
+      //   SMBLOCKWIDTH,
+      //   SMBLOCKHEIGHT,
+      //   0,
+      //   BLOCKMOVESPEED
+      // ),
+      // new FallingBlock(
+      //   WORLDWIDTH / 2 - 20,
+      //   80,
+      //   MBLOCKWIDTH,
+      //   MBLOCKHEIGHT,
+      //   0,
+      //   BLOCKMOVESPEED
+      // ),
     ];
   }
 
@@ -84,19 +82,12 @@ class World {
       myGame.world.player.moveRight(timeElapsed);
     }
     if (controller.up) {
-      console.log("before player: " + player.velocityY);
       myGame.world.player.jump();
-      console.log("after player: " + player.velocityY);
-
-      this.moveCamera(this.gravity, timeElapsed);
     }
 
     this.player.velocityY -= adjustForTime(this.gravity, timeElapsed); // Handles gravity, adjusted for time.
     this.player.velocityX *= this.friction ** (timeElapsed / TARGETMS); // Reduces the players speed using Friction, adjusted for time.
     this.player.update(timeElapsed); // Actually calculates player move
-    this.updateBoxes(timeElapsed);
-    console.log("after player update: " + player.velocityY);
-
     this.lava.update(timeElapsed); // Calculate lava move
     this.playerCollideWorld(this.player); // Uses player's new position to see if it collided with the world boundary.
     /**
@@ -105,9 +96,9 @@ class World {
      */
     COUNTER += 1;
     if (COUNTER === 200) {
-      console.log("random block x: ", Math.random() * WORLDWIDTH);
       const newFallingBlock = new FallingBlock(
-        Math.random() * WORLDWIDTH,
+        Math.random() * WORLDWIDTH - SMBLOCKWIDTH,
+        //this.player.y + this.player.heightheight + 50,
         50,
         SMBLOCKWIDTH,
         SMBLOCKHEIGHT,
@@ -138,27 +129,6 @@ class World {
     });
   }
 
-  moveCamera(gravity, timeElapsed) {
-    console.log("move camera player: " + player.velocityY);
-    ground -= 10; //this is the offset used for jump
-    //TODO ground is lost... if you don't land on a block you fall through
-
-    this.boxList.forEach((box) => {
-      console.log("before box: " + box.velocityY);
-
-      box.y -= adjustForTime(gravity, timeElapsed);
-      console.log("after box: " + box.velocityY);
-    });
-  }
-
-  updateBoxes(timeElapsed) {
-    this.boxList.forEach((box) => {
-      box.update(timeElapsed);
-      console.log("after box update: " + box.velocityY);
-    });
-    console.log("after update all boxes: ");
-  }
-
   playerCollideWorld(entity) {
     // Takes an entity as a parameter and sets it's position and velocity so that it can't escape the world bounds.
     if (entity.x < 0) {
@@ -170,10 +140,10 @@ class World {
       entity.x = this.width - entity.width;
       entity.velocityX = 0;
     }
-    if (entity.y < ground) {
+    if (entity.y < 0) {
       // Check floor
-      entity.y = ground;
-      entity.velocityY = ground;
+      entity.y = 0;
+      entity.velocityY = 0;
       entity.isGrounded = true;
     }
   }
@@ -325,10 +295,10 @@ class FallingBlock extends Entity {
     // Adjusts the entities' x and y position from its velocity, adjusted for time.
     if (!this.isGrounded) {
       this.y += adjustForTime(this.velocityY, timeElapsed);
-      if (this.y <= ground) {
+      if (this.y <= 0) {
         this.isGrounded = true;
-        this.velocityY = ground;
-        this.y = ground;
+        this.velocityY = 0;
+        this.y = 0;
       }
     }
   }
