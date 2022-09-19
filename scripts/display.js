@@ -3,6 +3,7 @@
  */
 const GRADIENTSPAN = 30;
 const MIDSCREEN = 35;
+
 class Display {
   constructor(game) {
     this.game = game;
