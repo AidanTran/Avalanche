@@ -6,6 +6,8 @@ const FRICTION = 0.85; // How fast player.velocityX shrinks.
 const GRAVITY = 1; // How fast player falls.
 const WORLDWIDTH = 100;
 const WORLDHEIGHT = 90;
+let COUNTER = 0;
+let IDXCOUNT = 2;
 
 class Game {
   constructor() {
@@ -55,7 +57,7 @@ class World {
         BLOCKMOVESPEED
       ),
       new FallingBlock(
-        WORLDWIDTH / 2 + 20,
+        WORLDWIDTH / 2 - 20,
         80,
         MBLOCKWIDTH,
         MBLOCKHEIGHT,
@@ -95,7 +97,21 @@ class World {
      * while loop over list of boxes.
      * Determine whether player collides with any of those boxes. Update player values.
      */
-
+    COUNTER += 1;
+    if (COUNTER === 200){
+      const newFallingBlock = new FallingBlock(
+        WORLDWIDTH / 2 - 20,
+        50,
+        SMBLOCKWIDTH,
+        SMBLOCKHEIGHT,
+        0,
+        BLOCKMOVESPEED
+      )
+      this.boxList.push(newFallingBlock);
+      this.fallingBoxes.add(IDXCOUNT);
+      IDXCOUNT+=1;
+      COUNTER = 0;
+    }
     for (let i = 0; i < this.boxList.length; i++) {
       // always have a block falling until hits ground
       this.boxList[i].update(timeElapsed);
@@ -242,8 +258,8 @@ class World {
     const grounded = this.boxList[idx2];
 
     if (falling.y < grounded.y + grounded.height){
-      if (falling.x < grounded.x + grounded.width ||
-        falling.x + falling.width > grounded.x
+      if (falling.x <= grounded.x && falling.x + falling.width >= grounded.x||
+        falling.x + falling.width >= grounded.x + grounded.width && falling.x >= grounded.x
       ){
         falling.isGrounded = true;
         falling.y = grounded.y + grounded.height;
