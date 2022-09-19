@@ -42,7 +42,14 @@ class World {
     this.friction = friction;
     this.gravity = gravity;
     this.width = width;
-    this.lava = new Lava(WORLDWIDTH, INITALLAVAHEIGHT, WORLDWIDTH, WORLDHEIGHT / 3, 0, LAVARISERATE);
+    this.lava = new Lava(
+      WORLDWIDTH,
+      INITALLAVAHEIGHT,
+      WORLDWIDTH,
+      WORLDHEIGHT / 3,
+      0,
+      LAVARISERATE
+    );
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
     this.fallingBoxes = new Set([0, 1]);
     this.boxList = [
@@ -69,13 +76,13 @@ class World {
     // Handles all entities movement and collisions.
     // Handles movement of player from controller.
     if (controller.left) {
-      myGame.world.player.moveLeft(timeElapsed);
+      this.player.moveLeft(timeElapsed);
     }
     if (controller.right) {
-      myGame.world.player.moveRight(timeElapsed);
+      this.player.moveRight(timeElapsed);
     }
     if (controller.up) {
-      myGame.world.player.jump();
+      this.player.jump();
     }
 
     this.player.velocityY -= adjustForTime(this.gravity, timeElapsed); // Handles gravity, adjusted for time.
@@ -88,7 +95,7 @@ class World {
      * Determine whether player collides with any of those boxes. Update player values.
      */
     COUNTER += 1;
-    if (COUNTER === 200){
+    if (COUNTER === 200) {
       const newFallingBlock = new FallingBlock(
         WORLDWIDTH / 2 - 20,
         50,
@@ -96,10 +103,10 @@ class World {
         SMBLOCKHEIGHT,
         0,
         BLOCKMOVESPEED
-      )
+      );
       this.boxList.push(newFallingBlock);
       this.fallingBoxes.add(IDXCOUNT);
-      IDXCOUNT+=1;
+      IDXCOUNT += 1;
       COUNTER = 0;
     }
     for (let i = 0; i < this.boxList.length; i++) {
@@ -224,10 +231,12 @@ class World {
     const falling = this.boxList[idx1];
     const grounded = this.boxList[idx2];
 
-    if (falling.y < grounded.y + grounded.height){
-      if (falling.x <= grounded.x && falling.x + falling.width >= grounded.x||
-        falling.x + falling.width >= grounded.x + grounded.width && falling.x >= grounded.x
-      ){
+    if (falling.y < grounded.y + grounded.height) {
+      if (
+        (falling.x <= grounded.x && falling.x + falling.width >= grounded.x) ||
+        (falling.x + falling.width >= grounded.x + grounded.width &&
+          falling.x >= grounded.x)
+      ) {
         falling.isGrounded = true;
         falling.y = grounded.y + grounded.height;
       }
@@ -301,5 +310,5 @@ class Lava extends Entity {
   update(timeElapsed) {
     this.y += adjustForTime(this.velocityY, timeElapsed);
     this.x += adjustForTime(this.velocityX, timeElapsed);
-    }
+  }
 }
