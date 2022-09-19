@@ -76,13 +76,13 @@ class World {
     // Handles all entities movement and collisions.
     // Handles movement of player from controller.
     if (controller.left) {
-      myGame.world.player.moveLeft(timeElapsed);
+      this.player.moveLeft(timeElapsed);
     }
     if (controller.right) {
-      myGame.world.player.moveRight(timeElapsed);
+      this.player.moveRight(timeElapsed);
     }
     if (controller.up) {
-      myGame.world.player.jump();
+      this.player.jump();
     }
 
     this.player.velocityY -= adjustForTime(this.gravity, timeElapsed); // Handles gravity, adjusted for time.
