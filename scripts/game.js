@@ -6,8 +6,7 @@ const FRICTION = 0.85; // How fast player.velocityX shrinks.
 const GRAVITY = 1; // How fast player falls.
 const WORLDWIDTH = 100;
 const WORLDHEIGHT = 90;
-let COUNTER = 0;
-let IDXCOUNT = 2;
+let COUNTER = 0; //just an int that will increment for everytime engine calls update
 
 class Game {
   constructor() {
@@ -95,18 +94,18 @@ class World {
      * Determine whether player collides with any of those boxes. Update player values.
      */
     COUNTER += 1;
-    if (COUNTER === 200) {
+    if (COUNTER === 50) {
+      //Once counter reaches a certain limit it will spawn a new block and reset
       const newFallingBlock = new FallingBlock(
-        WORLDWIDTH / 2 - 20,
-        50,
+        Math.random() * WORLDWIDTH,
+        this.player.y + this.player.height + 60,
         SMBLOCKWIDTH,
         SMBLOCKHEIGHT,
         0,
         BLOCKMOVESPEED
       );
       this.boxList.push(newFallingBlock);
-      this.fallingBoxes.add(IDXCOUNT);
-      IDXCOUNT += 1;
+      this.fallingBoxes.add(this.boxList.length - 1);
       COUNTER = 0;
     }
     for (let i = 0; i < this.boxList.length; i++) {
@@ -152,7 +151,6 @@ class World {
     const playerTopY = this.player.y + this.player.height; ////topmost y cord (player)
     const blockRightX = block.x + block.width; //rightmost x cord (block)
     const blockTopY = block.y + block.height; //topmost y cord (block)
-    const blockBottomY = block.height - block.y; //bottommost y cord (block)
 
     //player is on left side of block
     if (
@@ -235,7 +233,8 @@ class World {
       if (
         (falling.x <= grounded.x && falling.x + falling.width >= grounded.x) ||
         (falling.x + falling.width >= grounded.x + grounded.width &&
-          falling.x >= grounded.x)
+        falling.x <= grounded.x + grounded.width) || 
+        falling.x >= grounded.x && falling.x + falling.width <= grounded.x + grounded.width
       ) {
         falling.isGrounded = true;
         falling.y = grounded.y + grounded.height;
