@@ -115,14 +115,14 @@ class World {
     });
   }
 
-  moveCamera(gravity, timeElapsed, currentBoxes){
+  moveCamera(gravity, timeElapsed){
     console.log("move camera player: "+player.velocityY);
+    ground-=10;
 
-    currentBoxes.forEach(box => {
+    this.boxList.forEach(box => {
       console.log("before box: "+box.velocityY);
 
-      box.velocityY += adjustForTime(gravity, timeElapsed); // Handles gravity, adjusted for time.
-      //box.velocityX *= this.friction ** (timeElapsed / TARGETMS); // Reduces the speed using Friction, adjusted for time.
+      box.y-=adjustForTime(gravity, timeElapsed);
       console.log("after box: "+box.velocityY);
 
     });
