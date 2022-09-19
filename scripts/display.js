@@ -19,7 +19,7 @@ class Display {
     // This is what moves the player. The mallow's current position is relative to the top left corner of the live-game html area
     // This area is currently the whole screen.
     $("#player").css("left", this.game.world.player.x + "%"); // For every unit in game space, we move the player another percent of the screen.
-    $("#player").css("bottom", MIDSCREEN + this.game.world.player.y + "%"); // This goes for the y direction too, currenty 1 game unit = 1% screen space relative to direction.
+    $("#player").css("bottom", MIDSCREEN + "%"); // This goes for the y direction too, currenty 1 game unit = 1% screen space relative to direction.
 
     while (updatednumBoxes > this.numBoxes) {
       //creates new divs per block in the world
@@ -38,7 +38,7 @@ class Display {
 
     for (let i = 0; i < this.numBoxes; i++) {
       $("#" + i).css("left", this.game.world.boxList[i].x + "%");
-      $("#" + i).css("bottom", MIDSCREEN + this.game.world.boxList[i].y + "%");
+      $("#" + i).css("bottom", MIDSCREEN + this.game.world.boxList[i].y - + this.game.world.player.y + "%");
     }
 
     if (controller.left && controller.right) {
