@@ -31,7 +31,7 @@ const MBLOCKWIDTH = 20;
 const MBLOCKHEIGHT = 20;
 const SMBLOCKWIDTH = 10;
 const SMBLOCKHEIGHT = 10;
-const BLOCKMOVESPEED = -1; 
+const BLOCKMOVESPEED = -1;
 
 ground = 0;
 
@@ -44,7 +44,14 @@ class World {
     this.friction = friction;
     this.gravity = gravity;
     this.width = width;
-    this.lava = new Lava(WORLDWIDTH, INITALLAVAHEIGHT, WORLDWIDTH, WORLDHEIGHT / 3, 0, LAVARISERATE);
+    this.lava = new Lava(
+      WORLDWIDTH,
+      INITALLAVAHEIGHT,
+      WORLDWIDTH,
+      WORLDHEIGHT / 3,
+      0,
+      LAVARISERATE
+    );
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
     this.fallingBoxes = new Set([0, 1]);
     this.boxList = [
@@ -77,19 +84,18 @@ class World {
       myGame.world.player.moveRight(timeElapsed);
     }
     if (controller.up) {
-      console.log("before player: "+player.velocityY);
+      console.log("before player: " + player.velocityY);
       myGame.world.player.jump();
-      console.log("after player: "+player.velocityY);
+      console.log("after player: " + player.velocityY);
 
       this.moveCamera(this.gravity, timeElapsed);
-
     }
 
     this.player.velocityY -= adjustForTime(this.gravity, timeElapsed); // Handles gravity, adjusted for time.
     this.player.velocityX *= this.friction ** (timeElapsed / TARGETMS); // Reduces the players speed using Friction, adjusted for time.
     this.player.update(timeElapsed); // Actually calculates player move
     this.updateBoxes(timeElapsed);
-    console.log("after player update: "+player.velocityY);
+    console.log("after player update: " + player.velocityY);
 
     this.lava.update(timeElapsed); // Calculate lava move
     this.playerCollideWorld(this.player); // Uses player's new position to see if it collided with the world boundary.
@@ -98,18 +104,19 @@ class World {
      * Determine whether player collides with any of those boxes. Update player values.
      */
     COUNTER += 1;
-    if (COUNTER === 200){
+    if (COUNTER === 200) {
+      console.log("random block x: ", Math.random() * WORLDWIDTH);
       const newFallingBlock = new FallingBlock(
-        WORLDWIDTH / 2 - 20,
+        Math.random() * WORLDWIDTH,
         50,
         SMBLOCKWIDTH,
         SMBLOCKHEIGHT,
         0,
         BLOCKMOVESPEED
-      )
+      );
       this.boxList.push(newFallingBlock);
       this.fallingBoxes.add(IDXCOUNT);
-      IDXCOUNT+=1;
+      IDXCOUNT += 1;
       COUNTER = 0;
     }
     for (let i = 0; i < this.boxList.length; i++) {
@@ -131,28 +138,25 @@ class World {
     });
   }
 
-  moveCamera(gravity, timeElapsed){
-    console.log("move camera player: "+player.velocityY);
-    ground-=10; //this is the offset used for jump
+  moveCamera(gravity, timeElapsed) {
+    console.log("move camera player: " + player.velocityY);
+    ground -= 10; //this is the offset used for jump
     //TODO ground is lost... if you don't land on a block you fall through
 
-    this.boxList.forEach(box => {
-      console.log("before box: "+box.velocityY);
+    this.boxList.forEach((box) => {
+      console.log("before box: " + box.velocityY);
 
-      box.y-=adjustForTime(gravity, timeElapsed);
-      console.log("after box: "+box.velocityY);
-
+      box.y -= adjustForTime(gravity, timeElapsed);
+      console.log("after box: " + box.velocityY);
     });
   }
 
   updateBoxes(timeElapsed) {
-    this.boxList.forEach(box => {
+    this.boxList.forEach((box) => {
       box.update(timeElapsed);
-      console.log("after box update: "+box.velocityY);
-
+      console.log("after box update: " + box.velocityY);
     });
     console.log("after update all boxes: ");
-
   }
 
   playerCollideWorld(entity) {
@@ -258,10 +262,12 @@ class World {
     const falling = this.boxList[idx1];
     const grounded = this.boxList[idx2];
 
-    if (falling.y < grounded.y + grounded.height){
-      if (falling.x <= grounded.x && falling.x + falling.width >= grounded.x||
-        falling.x + falling.width >= grounded.x + grounded.width && falling.x >= grounded.x
-      ){
+    if (falling.y < grounded.y + grounded.height) {
+      if (
+        (falling.x <= grounded.x && falling.x + falling.width >= grounded.x) ||
+        (falling.x + falling.width >= grounded.x + grounded.width &&
+          falling.x >= grounded.x)
+      ) {
         falling.isGrounded = true;
         falling.y = grounded.y + grounded.height;
       }
@@ -324,7 +330,7 @@ class FallingBlock extends Entity {
         this.velocityY = ground;
         this.y = ground;
       }
-    } 
+    }
   }
 }
 class Lava extends Entity {
@@ -335,5 +341,5 @@ class Lava extends Entity {
   update(timeElapsed) {
     this.y += adjustForTime(this.velocityY, timeElapsed);
     this.x += adjustForTime(this.velocityX, timeElapsed);
-    }
+  }
 }
