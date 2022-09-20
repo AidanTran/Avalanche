@@ -58,5 +58,3 @@ $(".pause-button").on("click", function () {
 $(".redo-button").on("click", function () {
   myEngine.restart();
 });
-
-

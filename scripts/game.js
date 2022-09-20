@@ -33,6 +33,9 @@ const MBLOCKWIDTH = 20;
 const MBLOCKHEIGHT = 20;
 const SMBLOCKWIDTH = 10;
 const SMBLOCKHEIGHT = 10;
+let randBlockWidth;
+let randBlockHeight;
+
 const BLOCKMOVESPEED = -1;
 const DROPMAX = 50;
 const DROPMIN = -50;
@@ -59,26 +62,9 @@ class World {
       LAVARISERATE
     );
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
-    this.fallingBoxes = new Set(/*[0, 1]*/);
+    this.fallingBoxes = new Set();
 
-    this.boxList = [
-      // new FallingBlock(
-      //   WORLDWIDTH / 2,
-      //   0,
-      //   SMBLOCKWIDTH,
-      //   SMBLOCKHEIGHT,
-      //   0,
-      //   BLOCKMOVESPEED
-      // ),
-      // new FallingBlock(
-      //   WORLDWIDTH / 2 - 5,
-      //   80,
-      //   SMBLOCKWIDTH,
-      //   SMBLOCKHEIGHT,
-      //   0,
-      //   BLOCKMOVESPEED
-      // ),
-    ];
+    this.boxList = [];
   }
 
   handleControls(timeElapsed, controller) {
@@ -109,15 +95,17 @@ class World {
      * Determine whether player collides with any of those boxes. Update player values.
      */
     COUNTER += 1;
-    if (COUNTER === 50) {
+    if (COUNTER === 150) {
       //Once counter reaches a certain limit it will spawn a new block and reset
+      randBlockWidth = (Math.random() + 1) * SMBLOCKWIDTH;
+      randBlockHeight = (Math.random() + 1) * SMBLOCKHEIGHT;
       const newFallingBlock = new FallingBlock(
         Math.random() * WORLDWIDTH,
         this.player.y + this.player.height + 60,
-        SMBLOCKWIDTH,
-        SMBLOCKHEIGHT,
+        randBlockWidth,
+        randBlockHeight,
         0,
-        BLOCKMOVESPEED
+        (100 / (randBlockWidth * randBlockHeight)) * BLOCKMOVESPEED // 400 is max area of block (20x20)
       );
       this.boxList.push(newFallingBlock);
       this.fallingBoxes.add(this.boxList.length - 1);
