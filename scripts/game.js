@@ -33,13 +33,19 @@ const MBLOCKWIDTH = 20;
 const MBLOCKHEIGHT = 20;
 const SMBLOCKWIDTH = 10;
 const SMBLOCKHEIGHT = 10;
-const BLOCKMOVESPEED = -1; //can change just copied player
+const BLOCKMOVESPEED = -1;
+const DROPMAX = 50;
+const DROPMIN = -50;
 
 function adjustForTime(value, timeElapsed) {
   return (value * timeElapsed) / TARGETMS;
 }
 
 class World {
+  randomBoxDrop() {
+    return Math.random() * (DROPMAX - DROPMIN + 1) + DROPMIN;
+  }
+
   constructor(friction, gravity, width) {
     this.friction = friction;
     this.gravity = gravity;
@@ -54,9 +60,10 @@ class World {
     );
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
     this.fallingBoxes = new Set([0, 1]);
+
     this.boxList = [
       new FallingBlock(
-        WORLDWIDTH / 2 - 11.1,
+        WORLDWIDTH / 2 + 30,
         0,
         SMBLOCKWIDTH,
         SMBLOCKHEIGHT,
@@ -65,7 +72,7 @@ class World {
       ),
       new FallingBlock(
         WORLDWIDTH / 2,
-        0,
+        80,
         SMBLOCKWIDTH,
         SMBLOCKHEIGHT,
         0,
