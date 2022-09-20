@@ -45,10 +45,6 @@ function adjustForTime(value, timeElapsed) {
 }
 
 class World {
-  randomBoxDrop() {
-    return Math.random() * (DROPMAX - DROPMIN + 1) + DROPMIN;
-  }
-
   constructor(friction, gravity, width) {
     this.friction = friction;
     this.gravity = gravity;
@@ -65,6 +61,24 @@ class World {
     this.fallingBoxes = new Set();
 
     this.boxList = [];
+  }
+
+  update(timeElapsed, controller) {
+    this.handleControls(timeElapsed, controller);
+    this.handleForces(timeElapsed);
+    const isPlayerFalling = this.player.velocityY < 0;
+    const prevPlayerY = this.player.y;
+    this.player.update(timeElapsed); // Actually calculates player move
+    this.lava.update(timeElapsed); // Calculate lava move
+    this.playerCollideWorld(this.player); // Uses player's new position to see if it collided with the world boundary.
+    this.handleBoxSpawn();
+    if (
+      !this.boxUpdateLoop(timeElapsed) &&
+      isPlayerFalling &&
+      this.player.y < prevPlayerY
+    ) {
+      this.player.isGrounded = false;
+    }
   }
 
   handleControls(timeElapsed, controller) {
@@ -100,24 +114,27 @@ class World {
       randBlockWidth = (Math.random() + 1) * SMBLOCKWIDTH;
       randBlockHeight = (Math.random() + 1) * SMBLOCKHEIGHT;
       const newFallingBlock = new FallingBlock(
-        Math.random() * WORLDWIDTH,
+        Math.random() * WORLDWIDTH - 10,
         this.player.y + this.player.height + 60,
         randBlockWidth,
         randBlockHeight,
         0,
         (100 / (randBlockWidth * randBlockHeight)) * BLOCKMOVESPEED // 400 is max area of block (20x20)
       );
+      this.fallingBoxes.add(this.boxList.length);
       this.boxList.push(newFallingBlock);
-      this.fallingBoxes.add(this.boxList.length - 1);
       COUNTER = 0;
     }
   }
 
   boxUpdateLoop(timeElapsed) {
+    let groundedFlag = false;
     for (let i = 0; i < this.boxList.length; i++) {
       // always have a block falling until hits ground
       this.boxList[i].update(timeElapsed);
-      this.playerCollideBlock(this.boxList[i]);
+      if (this.playerCollideBlock(this.boxList[i])) {
+        groundedFlag = true;
+      }
     }
 
     this.fallingBoxes.forEach((idx) => {
@@ -131,21 +148,7 @@ class World {
         this.fallingBoxes.delete(idx);
       }
     });
-  }
-
-  update(timeElapsed, controller) {
-    this.handleControls(timeElapsed, controller);
-    this.handleForces(timeElapsed);
-    const isPlayerFalling = this.player.velocityY < 0;
-    const prevPlayerY = this.player.y;
-    this.player.update(timeElapsed); // Actually calculates player move
-    this.lava.update(timeElapsed); // Calculate lava move
-    this.playerCollideWorld(this.player); // Uses player's new position to see if it collided with the world boundary.
-    this.handleBoxSpawn();
-    this.boxUpdateLoop(timeElapsed);
-    if (isPlayerFalling && this.player.y < prevPlayerY) {
-      this.player.isGrounded = false;
-    }
+    return groundedFlag;
   }
 
   playerCollideWorld(entity) {
@@ -170,33 +173,33 @@ class World {
     const playerTopY = this.player.y + this.player.height; ////topmost y cord (player)
     const blockRightX = block.x + block.width; //rightmost x cord (block)
     const blockTopY = block.y + block.height; //topmost y cord (block)
-
+    let groundedFlag = false;
+    let bonkFlag = false;
+    let leftFlag = false;
+    let rightFlag = false;
     if (this.player.x >= block.x && playerRightX <= blockRightX) {
       //If the player is standing on the top of the block flat. no corners involved. It will be grounded on the block
       if (this.player.y <= blockTopY && playerTopY >= blockTopY) {
-        this.player.y = blockTopY;
-        this.player.velocityY = block.velocityY;
-        this.player.isGrounded = true;
+        groundedFlag = true;
       } else if (this.player.y < block.y && playerTopY > block.y) {
         // If player hits the bottom of the block flat
-        this.player.y = block.y - this.player.height;
-        this.player.velocityY = -0.5;
+        bonkFlag = true;
       }
     } else if (playerRightX > block.x && this.player.x < block.x) {
       // player is left
-      if (this.player.y <= blockTopY && playerTopY >= blockTopY) {
+      if (this.player.y > block.y && playerTopY <= blockTopY) {
+        // Player is flat left, no corner
+        leftFlag = true;
+      } else if (this.player.y <= blockTopY && playerTopY >= blockTopY) {
         // Player is in topleft corner
         if (
           // If the player is moving right and they are further into the corner left then down, then push them horizontally
           this.player.velocityX > 0 &&
           playerRightX - block.x < blockTopY - this.player.y
         ) {
-          this.player.x = block.x - this.player.width; // Pushed left
-          this.player.velocityX = 0;
+          leftFlag = true;
         } else {
-          this.player.y = blockTopY; // Player grounded
-          this.player.velocityY = block.velocityY;
-          this.player.isGrounded = true;
+          groundedFlag = true;
         }
       } else if (this.player.y <= block.y && playerTopY > block.y) {
         // Player is in bottomleft corner
@@ -205,27 +208,25 @@ class World {
           this.player.velocityX > 0 &&
           playerRightX - block.x < playerTopY - block.y
         ) {
-          this.player.x = block.x - this.player.width; // Pushed left
-          this.player.velocityX = 0;
+          leftFlag = true;
         } else {
-          this.player.y = block.y - this.player.height; // Player bonked
-          this.player.velocityY = -0.5;
+          bonkFlag = true;
         }
       }
     } else if (this.player.x < blockRightX && playerRightX > blockRightX) {
       // player is right
-      if (this.player.y <= blockTopY && playerTopY >= blockTopY) {
+      if (this.player.y > block.y && playerTopY <= blockTopY) {
+        // Player is flat right, no corner
+        rightFlag = true;
+      } else if (this.player.y <= blockTopY && playerTopY >= blockTopY) {
         // Player is in topright corner
         if (
           this.player.velocityX < 0 &&
           blockRightX - this.player.x < blockTopY - this.player.y
         ) {
-          this.player.x = blockRightX; // Pushed right
-          this.player.velocityX = 0;
+          rightFlag = true;
         } else {
-          this.player.y = blockTopY; // Grounded
-          this.player.velocityY = block.velocityY;
-          this.player.isGrounded = true;
+          groundedFlag = true;
         }
       } else if (this.player.y <= block.y && playerTopY > block.y) {
         // Player is in bottomright corner
@@ -233,14 +234,30 @@ class World {
           this.player.velocityX < 0 &&
           blockRightX - this.player.x < playerTopY - block.y
         ) {
-          this.player.x = blockRightX; // Pushed right
-          this.player.velocityX = 0;
+          rightFlag = true;
         } else {
-          this.player.y = block.y - this.player.height; // Grounded
-          this.player.velocityY = -0.5;
+          bonkFlag = true;
         }
       }
     }
+    if (groundedFlag) {
+      this.player.y = blockTopY;
+      this.player.velocityY = block.velocityY;
+      this.player.isGrounded = true;
+    }
+    if (bonkFlag) {
+      this.player.y = block.y - this.player.height;
+      this.player.velocityY = -0.5;
+    }
+    if (leftFlag) {
+      this.player.x = block.x - this.player.width; // Pushed left
+      this.player.velocityX = 0;
+    }
+    if (rightFlag) {
+      this.player.x = blockRightX; // Pushed right
+      this.player.velocityX = 0;
+    }
+    return groundedFlag;
   }
 
   boxCollideBox(idx1, idx2) {
