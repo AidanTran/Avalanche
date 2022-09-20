@@ -7,6 +7,7 @@ body {
   background: #fff;
   color: #000;
   max-width: 100%;
+  overflow-y: hidden;
   overflow-x: hidden;
 }
 /* sets the body height of the browser, so that backgrounds and div heights work correctly. Color and background will almost certainly be altered; they are just placeholders */
@@ -51,7 +52,6 @@ body {
   background-color: red;
   border: min(5px, 2vw) solid black;
   border-radius: 5%;
-
 }
 
 .start-button {
@@ -70,7 +70,7 @@ body {
   border-width: 37px 37px 37px 60px;
 }
 
-.pause-button{
+.pause-button {
   border: 0;
   background: transparent;
   box-sizing: border-box;
@@ -82,7 +82,7 @@ body {
   border-width: 0px 0 0px 60px;
 }
 
-.redo-button{
+.redo-button {
   transform: rotate(90deg);
   width: 60px;
   border-style: transparent;

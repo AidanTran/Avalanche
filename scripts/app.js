@@ -17,9 +17,12 @@ let keyDownUp = function (event) {
   myController.keyDownUp(event.type, event.keyCode);
 };
 
+const FRAMETHRESHOLD = 65;
 let update = function (timeElapsed) {
-  myGame.update(timeElapsed, myController);
-  myDisplay.render(myController);
+  if (timeElapsed < FRAMETHRESHOLD) {
+    myGame.update(timeElapsed, myController);
+    myDisplay.render(myController);
+  }
 };
 
 let myEngine = new Engine(update);
