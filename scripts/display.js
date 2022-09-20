@@ -3,6 +3,8 @@
  */
 const GRADIENTSPAN = 30;
 const MIDSCREEN = 35;
+const BLOCK_COLORS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
+
 class Display {
   constructor(game) {
     this.game = game;
@@ -33,6 +35,8 @@ class Display {
         this.game.world.boxList[this.numBoxes].height + "%"
       );
       $(idStr).css("left", this.game.world.boxList[this.numBoxes].x + "%");
+      $(idStr).css("background-color", BLOCK_COLORS[Math.floor(Math.random() * BLOCK_COLORS.length)]);
+
       this.numBoxes += 1;
     }
 
