@@ -99,8 +99,8 @@ class World {
       const newFallingBlock = new FallingBlock(
         Math.random() * WORLDWIDTH,
         this.player.y + this.player.height + 60,
-        SMBLOCKWIDTH,
-        SMBLOCKHEIGHT,
+        (Math.random() + 1) * SMBLOCKWIDTH,
+        (Math.random() + 1) * SMBLOCKHEIGHT,
         0,
         BLOCKMOVESPEED
       );
