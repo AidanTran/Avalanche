@@ -17,7 +17,7 @@ let keyDownUp = function (event) {
   myController.keyDownUp(event.type, event.keyCode);
 };
 
-const FRAMETHRESHOLD = 65;
+const FRAMETHRESHOLD = 33;
 let update = function (timeElapsed) {
   if (timeElapsed < FRAMETHRESHOLD) {
     myGame.update(timeElapsed, myController);
