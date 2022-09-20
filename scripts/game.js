@@ -58,26 +58,9 @@ class World {
       LAVARISERATE
     );
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
-    this.fallingBoxes = new Set([0, 1]);
+    this.fallingBoxes = new Set();
 
-    this.boxList = [
-      new FallingBlock(
-        WORLDWIDTH / 2 - 13,
-        0,
-        SMBLOCKWIDTH,
-        SMBLOCKHEIGHT,
-        0,
-        BLOCKMOVESPEED
-      ),
-      new FallingBlock(
-        WORLDWIDTH / 2,
-        80,
-        SMBLOCKWIDTH,
-        SMBLOCKHEIGHT,
-        0,
-        BLOCKMOVESPEED
-      ),
-    ];
+    this.boxList = [];
   }
 
   update(timeElapsed, controller) {
@@ -103,7 +86,7 @@ class World {
      * Determine whether player collides with any of those boxes. Update player values.
      */
     COUNTER += 1;
-    if (COUNTER === 50) {
+    if (COUNTER === 150) {
       //Once counter reaches a certain limit it will spawn a new block and reset
       randBlockWidth = (Math.random() + 1) * SMBLOCKWIDTH;
       randBlockHeight = (Math.random() + 1) * SMBLOCKHEIGHT;
