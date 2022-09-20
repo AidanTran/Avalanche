@@ -33,12 +33,7 @@ const MBLOCKWIDTH = 20;
 const MBLOCKHEIGHT = 20;
 const SMBLOCKWIDTH = 10;
 const SMBLOCKHEIGHT = 10;
-let randBlockWidth;
-let randBlockHeight;
-
 const BLOCKMOVESPEED = -1;
-const DROPMAX = 50;
-const DROPMIN = -50;
 
 function adjustForTime(value, timeElapsed) {
   return (value * timeElapsed) / TARGETMS;
@@ -104,8 +99,8 @@ class World {
     COUNTER += 1;
     if (COUNTER === 150) {
       //Once counter reaches a certain limit it will spawn a new block and reset
-      randBlockWidth = (Math.random() + 1) * SMBLOCKWIDTH;
-      randBlockHeight = (Math.random() + 1) * SMBLOCKHEIGHT;
+      const randBlockWidth = (Math.random() + 1) * SMBLOCKWIDTH;
+      const randBlockHeight = (Math.random() + 1) * SMBLOCKHEIGHT;
       const newFallingBlock = new FallingBlock(
         Math.random() * WORLDWIDTH - 10,
         this.player.y + this.player.height + 60,
