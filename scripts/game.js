@@ -8,6 +8,8 @@ const WORLDWIDTH = 100;
 const WORLDHEIGHT = 90;
 let COUNTER = 0;
 let IDXCOUNT = 2;
+const DROPMAX=50; 
+const DROPMIN=-50; 
 
 class Game {
   constructor() {
@@ -38,6 +40,10 @@ function adjustForTime(value, timeElapsed) {
 }
 
 class World {
+  randomBoxDrop() {
+    return Math.random()*(DROPMAX-DROPMIN+1)+DROPMIN;
+  }
+
   constructor(friction, gravity, width) {
     this.friction = friction;
     this.gravity = gravity;
@@ -54,7 +60,7 @@ class World {
     this.fallingBoxes = new Set([0, 1]);
     this.boxList = [
       new FallingBlock(
-        WORLDWIDTH / 2 + 20,
+        WORLDWIDTH / 2 + this.randomBoxDrop(),
         0,
         SMBLOCKWIDTH,
         SMBLOCKHEIGHT,
@@ -62,7 +68,7 @@ class World {
         BLOCKMOVESPEED
       ),
       new FallingBlock(
-        WORLDWIDTH / 2 - 20,
+        WORLDWIDTH / 2 + this.randomBoxDrop(),
         80,
         MBLOCKWIDTH,
         MBLOCKHEIGHT,
@@ -97,7 +103,7 @@ class World {
     COUNTER += 1;
     if (COUNTER === 200) {
       const newFallingBlock = new FallingBlock(
-        WORLDWIDTH / 2 - 20,
+        WORLDWIDTH / 2 + this.randomBoxDrop(),
         50,
         SMBLOCKWIDTH,
         SMBLOCKHEIGHT,
