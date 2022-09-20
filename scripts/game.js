@@ -30,6 +30,8 @@ const MBLOCKWIDTH = 20;
 const MBLOCKHEIGHT = 20;
 const SMBLOCKWIDTH = 10;
 const SMBLOCKHEIGHT = 10;
+let randBlockWidth;
+let randBlockHeight;
 const BLOCKMOVESPEED = -1;
 const DROPMAX = 50;
 const DROPMIN = -50;
@@ -103,13 +105,15 @@ class World {
     COUNTER += 1;
     if (COUNTER === 50) {
       //Once counter reaches a certain limit it will spawn a new block and reset
+      randBlockWidth = (Math.random() + 1) * SMBLOCKWIDTH;
+      randBlockHeight = (Math.random() + 1) * SMBLOCKHEIGHT;
       const newFallingBlock = new FallingBlock(
         Math.random() * WORLDWIDTH,
         this.player.y + this.player.height + 60,
-        (Math.random() + 1) * SMBLOCKWIDTH,
-        (Math.random() + 1) * SMBLOCKHEIGHT,
+        randBlockWidth,
+        randBlockHeight,
         0,
-        BLOCKMOVESPEED
+        (100 / (randBlockWidth * randBlockHeight)) * BLOCKMOVESPEED // 400 is max area of block (20x20)
       );
       this.boxList.push(newFallingBlock);
       this.fallingBoxes.add(this.boxList.length - 1);
