@@ -18,10 +18,6 @@ class Engine {
     this.done = true;
   }
 
-  restart() {
-    window.location.reload();
-  }
-
   /**
    * This function uses the previousTimeStamp stored in the Engine class and calculates the time since last update.
    * Time elapsed is very important for handling consistent physics in the game.

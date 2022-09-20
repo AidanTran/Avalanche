@@ -6,26 +6,32 @@ const MIDSCREEN = 35;
 const BLOCK_COLORS = ["red", "orange", "yellow", "green", "blue", "purple"];
 
 class Display {
-  constructor(game) {
-    this.game = game;
+  constructor() {
     this.colorBase = 180;
     this.numBoxes = 0;
-    $("#player").css("bottom", "50%");
-    $("#player").css("width", this.game.world.player.width + "%");
-    $("#player").css("height", this.game.world.player.height + "%");
   }
 
-  render(controller) {
+  initialize(game) {
+    $("#player").css("width", game.world.player.width + "%");
+    $("#player").css("height", game.world.player.height + "%");
+  }
+
+  reset() {
+    this.numBoxes = 0;
+    $(".boxes").remove();
+  }
+
+  render(controller, game) {
     //updatednumBoxes is updated when something is added to the boxlist
-    let updatednumBoxes = this.game.world.boxList.length;
+    let updatednumBoxes = game.world.boxList.length;
     // This is what moves the player. The mallow's current position is relative to the top left corner of the live-game html area
     // This area is currently the whole screen.
-    $("#player").css("left", this.game.world.player.x + "%"); // For every unit in game space, we move the player another percent of the screen.
+    $("#player").css("left", game.world.player.x + "%"); // For every unit in game space, we move the player another percent of the screen.
     $("#player").css("bottom", MIDSCREEN + "%"); // This goes for the y direction too, currenty 1 game unit = 1% screen space relative to direction.
-    $("#floor").css("top", 100 - MIDSCREEN + this.game.world.player.y + "%");
+    $("#floor").css("top", 100 - MIDSCREEN + game.world.player.y + "%");
     $("#lava").css(
       "bottom",
-      -100 + this.game.world.lavaHeight - this.game.world.player.y + "%"
+      -100 + MIDSCREEN + game.world.lavaHeight - game.world.player.y + "%"
     );
 
     while (updatednumBoxes > this.numBoxes) {
@@ -34,12 +40,9 @@ class Display {
         '<div class="boxes" id=' + this.numBoxes.toString() + "></div>"
       ).appendTo("#live-game");
       const idStr = "#" + this.numBoxes.toString();
-      $(idStr).css("width", this.game.world.boxList[this.numBoxes].width + "%");
-      $(idStr).css(
-        "height",
-        this.game.world.boxList[this.numBoxes].height + "%"
-      );
-      $(idStr).css("left", this.game.world.boxList[this.numBoxes].x + "%");
+      $(idStr).css("width", game.world.boxList[this.numBoxes].width + "%");
+      $(idStr).css("height", game.world.boxList[this.numBoxes].height + "%");
+      $(idStr).css("left", game.world.boxList[this.numBoxes].x + "%");
       $(idStr).css(
         "background-color",
         BLOCK_COLORS[Math.floor(Math.random() * BLOCK_COLORS.length)]
@@ -49,13 +52,10 @@ class Display {
     }
 
     for (let i = 0; i < this.numBoxes; i++) {
-      $("#" + i).css("left", this.game.world.boxList[i].x + "%");
+      $("#" + i).css("left", game.world.boxList[i].x + "%");
       $("#" + i).css(
         "bottom",
-        MIDSCREEN +
-          this.game.world.boxList[i].y -
-          +this.game.world.player.y +
-          "%"
+        MIDSCREEN + game.world.boxList[i].y - +game.world.player.y + "%"
       );
     }
 
@@ -76,8 +76,7 @@ class Display {
     }
 
     // Color gradient based on player height
-    const color =
-      (this.colorBase + parseInt(this.game.world.player.y / 3)) % 360;
+    const color = (this.colorBase + parseInt(game.world.player.y / 3)) % 360;
     const backgroundString =
       "linear-gradient( to bottom,hsl(" +
       color +

@@ -15,8 +15,13 @@ class Game {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
   }
 
+  restart() {
+    this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
+    console.log("restarted", this.world);
+  }
+
   update(timeElapsed, controller) {
-    this.world.update(timeElapsed, controller);
+    return this.world.update(timeElapsed, controller);
   }
 }
 
@@ -58,14 +63,14 @@ class World {
     const prevPlayerY = this.player.y;
     this.player.update(timeElapsed); // Actually calculates player move
     this.lavaHeight += this.lavaRise; // Calculate lava move
-    this.playerCollideWorld(this.player); // Uses player's new position to see if it collided with the world boundary.
+    const inLava = this.playerCollideWorld(this.player); // Uses player's new position to see if it collided with the world boundary.
     this.handleBoxSpawn();
-    if (
-      !this.boxUpdateLoop(timeElapsed) &&
-      isPlayerFalling &&
-      this.player.y < prevPlayerY
-    ) {
+    const [hasBeenCrushed, hasBeenGrounded] = this.boxUpdateLoop(timeElapsed);
+    if (!hasBeenGrounded && isPlayerFalling && this.player.y < prevPlayerY) {
       this.player.isGrounded = false;
+    }
+    if (inLava || hasBeenCrushed) {
+      return true;
     }
   }
 
@@ -117,11 +122,18 @@ class World {
 
   boxUpdateLoop(timeElapsed) {
     let groundedFlag = false;
+    let crushedFlag = false;
     for (let i = 0; i < this.boxList.length; i++) {
       // always have a block falling until hits ground
       this.boxList[i].update(timeElapsed);
-      if (this.playerCollideBlock(this.boxList[i])) {
+      const [tempCrushed, tempGrounded] = this.playerCollideBlock(
+        this.boxList[i]
+      );
+      if (tempGrounded) {
         groundedFlag = true;
+      }
+      if (tempCrushed) {
+        crushedFlag = true;
       }
     }
 
@@ -136,7 +148,7 @@ class World {
         this.fallingBoxes.delete(idx);
       }
     });
-    return groundedFlag;
+    return [crushedFlag, groundedFlag];
   }
 
   playerCollideWorld(entity) {
@@ -154,6 +166,11 @@ class World {
       entity.velocityY = 0;
       entity.isGrounded = true;
     }
+
+    if (entity.y < this.lavaHeight) {
+      return true;
+    }
+    return false;
   }
 
   playerCollideBlock(block) {
@@ -162,6 +179,7 @@ class World {
     const blockRightX = block.x + block.width; //rightmost x cord (block)
     const blockTopY = block.y + block.height; //topmost y cord (block)
     let groundedFlag = false;
+    let crushedFlag = false;
     let bonkFlag = false;
     let leftFlag = false;
     let rightFlag = false;
@@ -172,6 +190,9 @@ class World {
       } else if (this.player.y < block.y && playerTopY > block.y) {
         // If player hits the bottom of the block flat
         bonkFlag = true;
+        if (this.player.isGrounded) {
+          crushedFlag = true;
+        }
       }
     } else if (playerRightX > block.x && this.player.x < block.x) {
       // player is left
@@ -199,6 +220,9 @@ class World {
           leftFlag = true;
         } else {
           bonkFlag = true;
+          if (this.player.isGrounded) {
+            crushedFlag = true;
+          }
         }
       }
     } else if (this.player.x < blockRightX && playerRightX > blockRightX) {
@@ -225,6 +249,9 @@ class World {
           rightFlag = true;
         } else {
           bonkFlag = true;
+          if (this.player.isGrounded) {
+            crushedFlag = true;
+          }
         }
       }
     }
@@ -245,7 +272,7 @@ class World {
       this.player.x = blockRightX; // Pushed right
       this.player.velocityX = 0;
     }
-    return groundedFlag;
+    return [crushedFlag, groundedFlag];
   }
 
   boxCollideBox(idx1, idx2) {

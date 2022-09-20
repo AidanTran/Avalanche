@@ -11,7 +11,7 @@
 
 let myGame = new Game();
 let myController = new Controller();
-let myDisplay = new Display(myGame, myController);
+let myDisplay = new Display();
 
 let keyDownUp = function (event) {
   myController.keyDownUp(event.type, event.keyCode);
@@ -20,8 +20,12 @@ let keyDownUp = function (event) {
 const FRAMETHRESHOLD = 33;
 let update = function (timeElapsed) {
   if (timeElapsed < FRAMETHRESHOLD) {
-    myGame.update(timeElapsed, myController);
-    myDisplay.render(myController);
+    if (myGame.update(timeElapsed, myController)) {
+      this.pause();
+      $("#live-game").css("display", "none");
+      $("#menu").css("display", "block");
+    }
+    myDisplay.render(myController, myGame);
   }
 };
 
