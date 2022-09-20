@@ -6,8 +6,7 @@ const FRICTION = 0.85; // How fast player.velocityX shrinks.
 const GRAVITY = 1; // How fast player falls.
 const WORLDWIDTH = 100;
 const WORLDHEIGHT = 90;
-let COUNTER = 0;
-let IDXCOUNT = 0;
+let COUNTER = 0; //just an int that will increment for everytime engine calls update
 
 class Game {
   constructor() {
@@ -20,7 +19,7 @@ class Game {
 }
 
 const PLAYERWIDTH = 5;
-const PLAYERHEIGHT = 10;
+const PLAYERHEIGHT = 8;
 const PLAYERMOVESPEED = 0.2;
 const INITALLAVAHEIGHT = -30;
 const LAVARISERATE = 0.5;
@@ -53,22 +52,22 @@ class World {
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
     this.fallingBoxes = new Set();
     this.boxList = [
-      // new FallingBlock(
-      //   WORLDWIDTH / 2 + 20,
-      //   0,
-      //   SMBLOCKWIDTH,
-      //   SMBLOCKHEIGHT,
-      //   0,
-      //   BLOCKMOVESPEED
-      // ),
-      // new FallingBlock(
-      //   WORLDWIDTH / 2 - 20,
-      //   80,
-      //   MBLOCKWIDTH,
-      //   MBLOCKHEIGHT,
-      //   0,
-      //   BLOCKMOVESPEED
-      // ),
+      new FallingBlock(
+        WORLDWIDTH / 2 - 13,
+        0,
+        SMBLOCKWIDTH,
+        SMBLOCKHEIGHT,
+        0,
+        BLOCKMOVESPEED
+      ),
+      new FallingBlock(
+        WORLDWIDTH / 2,
+        80,
+        SMBLOCKWIDTH,
+        SMBLOCKHEIGHT,
+        0,
+        BLOCKMOVESPEED
+      ),
     ];
   }
 
@@ -95,21 +94,21 @@ class World {
      * Determine whether player collides with any of those boxes. Update player values.
      */
     COUNTER += 1;
-    if (COUNTER === 200) {
+    if (COUNTER === 50) {
+      //Once counter reaches a certain limit it will spawn a new block and reset
       const newFallingBlock = new FallingBlock(
-        Math.random() * WORLDWIDTH - SMBLOCKWIDTH,
-        //this.player.y + this.player.heightheight + 50,
-        50,
+        Math.random() * WORLDWIDTH,
+        this.player.y + this.player.height + 60,
         SMBLOCKWIDTH,
         SMBLOCKHEIGHT,
         0,
         BLOCKMOVESPEED
       );
       this.boxList.push(newFallingBlock);
-      this.fallingBoxes.add(IDXCOUNT);
-      IDXCOUNT += 1;
+      this.fallingBoxes.add(this.boxList.length - 1);
       COUNTER = 0;
     }
+
     for (let i = 0; i < this.boxList.length; i++) {
       // always have a block falling until hits ground
       this.boxList[i].update(timeElapsed);
@@ -153,7 +152,6 @@ class World {
     const playerTopY = this.player.y + this.player.height; ////topmost y cord (player)
     const blockRightX = block.x + block.width; //rightmost x cord (block)
     const blockTopY = block.y + block.height; //topmost y cord (block)
-    const blockBottomY = block.height - block.y; //bottommost y cord (block)
 
     //player is on left side of block
     if (
@@ -162,6 +160,7 @@ class World {
       this.player.y < blockTopY &&
       playerTopY > block.y
     ) {
+      console.log(this.player.x, block.x);
       /*
       The following two if statements below is logic as to wether or not the player should favor the roof of the block 
       or the side of the block. This is needed because if the player collided in the corner. It's difficult
@@ -169,16 +168,20 @@ class World {
       */
       if (
         this.player.velocityX > 0 && // We ONLY favor the left if we are currently moving right AND
-        this.player.velocityX > -1 * this.player.velocityY // If our velocity traveling right is greater than our velocity traveling down.
+        playerRightX - block.x < blockTopY - this.player.y // If our velocity traveling right is greater than our velocity traveling down.
       ) {
         //more left favored
+        console.log("left, y: ", this.player.y, blockTopY);
         this.player.x = block.x - this.player.width;
         this.player.velocityX = 0;
-      } else {
+      } else if (this.player.y < blockTopY && playerTopY > blockTopY) {
         //more up favored
         this.player.y = blockTopY;
         this.player.velocityY = 0;
         this.player.isGrounded = true;
+      } else if (this.player.y < block.y && playerTopY > block.y) {
+        this.player.y = block.y - this.player.height;
+        this.player.velocityY = 0;
       }
     }
     //same logic but now dealing with right side collisions
@@ -190,40 +193,32 @@ class World {
     ) {
       if (
         this.player.velocityX < 0 &&
-        this.player.velocityX < this.player.velocityY
+        blockRightX - this.player.x < blockTopY - this.player.y
       ) {
         //right side favored
+        console.log("right, y: ", this.player.y, blockTopY);
         this.player.x = blockRightX;
         this.player.velocityX = 0;
-      } else {
-        //Top side favored
+      } else if (this.player.y < blockTopY && playerTopY > blockTopY) {
+        //more up favored
         this.player.y = blockTopY;
         this.player.velocityY = 0;
         this.player.isGrounded = true;
+      } else if (this.player.y < block.y && playerTopY > block.y) {
+        this.player.y = block.y - this.player.height;
+        this.player.velocityY = 0;
+      }
+    } else if (this.player.x >= block.x && playerRightX <= blockRightX) {
+      //If the player is standing on the top of the block flat. no corners involved. It will be grounded on the block
+      if (this.player.y <= blockTopY && playerTopY >= blockTopY) {
+        this.player.y = blockTopY;
+        this.player.velocityY = 0;
+        this.player.isGrounded = true;
+      } else if (this.player.y < block.y && playerTopY > block.y) {
+        this.player.y = block.y - this.player.height;
+        this.player.velocityY = 0;
       }
     }
-    //If the player is standing on the top of the block flat. no corners involved. It will be grounded on the block
-    else if (
-      this.player.x > block.x &&
-      playerRightX < blockRightX &&
-      this.player.y < blockTopY &&
-      playerTopY > block.y
-    ) {
-      this.player.y = blockTopY;
-      this.player.velocityY = 0;
-      this.player.isGrounded = true;
-    }
-    /** 
-    // bad attempt at collision control for player under the block bc i don't rly get how the coords work... TODO fix this lmao
-    else if (
-      playerTopY === blockBottomY &&
-      player.y < block.y
-    ) {
-      this.player.y = blockBottomY;
-      this.player.velocityY = 0;
-      this.player.isGrounded = false;
-    }
-    **/
   }
 
   boxCollideBox(idx1, idx2) {
@@ -236,7 +231,9 @@ class World {
       if (
         (falling.x <= grounded.x && falling.x + falling.width >= grounded.x) ||
         (falling.x + falling.width >= grounded.x + grounded.width &&
-          falling.x >= grounded.x)
+          falling.x <= grounded.x + grounded.width) ||
+        (falling.x >= grounded.x &&
+          falling.x + falling.width <= grounded.x + grounded.width)
       ) {
         falling.isGrounded = true;
         falling.y = grounded.y + grounded.height;
