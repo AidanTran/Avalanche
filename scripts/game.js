@@ -59,25 +59,25 @@ class World {
       LAVARISERATE
     );
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
-    this.fallingBoxes = new Set([0, 1]);
+    this.fallingBoxes = new Set(/*[0, 1]*/);
 
     this.boxList = [
-      new FallingBlock(
-        WORLDWIDTH / 2 + 30,
-        0,
-        SMBLOCKWIDTH,
-        SMBLOCKHEIGHT,
-        0,
-        BLOCKMOVESPEED
-      ),
-      new FallingBlock(
-        WORLDWIDTH / 2,
-        80,
-        SMBLOCKWIDTH,
-        SMBLOCKHEIGHT,
-        0,
-        BLOCKMOVESPEED
-      ),
+      // new FallingBlock(
+      //   WORLDWIDTH / 2,
+      //   0,
+      //   SMBLOCKWIDTH,
+      //   SMBLOCKHEIGHT,
+      //   0,
+      //   BLOCKMOVESPEED
+      // ),
+      // new FallingBlock(
+      //   WORLDWIDTH / 2 - 5,
+      //   80,
+      //   SMBLOCKWIDTH,
+      //   SMBLOCKHEIGHT,
+      //   0,
+      //   BLOCKMOVESPEED
+      // ),
     ];
   }
 
@@ -183,66 +183,74 @@ class World {
     const blockRightX = block.x + block.width; //rightmost x cord (block)
     const blockTopY = block.y + block.height; //topmost y cord (block)
 
-    //player is on left side of block
-    if (
-      playerRightX > block.x &&
-      this.player.x < block.x &&
-      ((this.player.y > block.y && this.player.y < blockTopY) ||
-        (playerTopY > block.y && playerTopY < blockTopY))
-    ) {
-      /*
-      The following two if statements below is logic as to wether or not the player should favor the roof of the block 
-      or the side of the block. This is needed because if the player collided in the corner. It's difficult
-      to tell if he should be pushed LEFT or pushed UP. 
-      */
-      if (
-        this.player.velocityX > 0 && // We ONLY favor the left if we are currently moving right AND
-        playerRightX - block.x < blockTopY - this.player.y // If our velocity traveling right is greater than our velocity traveling down.
-      ) {
-        this.player.x = block.x - this.player.width;
-        this.player.velocityX = 0;
-      } else if (this.player.y < blockTopY && playerTopY > blockTopY) {
-        //more up favored
-        this.player.y = blockTopY;
-        this.player.velocityY = block.velocityY;
-        this.player.isGrounded = true;
-      } else if (this.player.y < block.y && playerTopY > block.y) {
-        this.player.y = block.y - this.player.height;
-        this.player.velocityY = -0.5;
-      }
-    }
-    //same logic but now dealing with right side collisions
-    else if (
-      this.player.x < blockRightX &&
-      playerRightX > blockRightX &&
-      ((this.player.y > block.y && this.player.y < blockTopY) ||
-        (playerTopY > block.y && playerTopY < blockTopY))
-    ) {
-      if (
-        this.player.velocityX < 0 &&
-        blockRightX - this.player.x < blockTopY - this.player.y
-      ) {
-        //right side favored
-        this.player.x = blockRightX;
-        this.player.velocityX = 0;
-      } else if (this.player.y < blockTopY && playerTopY > blockTopY) {
-        //more up favored
-        this.player.y = blockTopY;
-        this.player.velocityY = block.velocityY;
-        this.player.isGrounded = true;
-      } else if (this.player.y < block.y && playerTopY > block.y) {
-        this.player.y = block.y - this.player.height;
-        this.player.velocityY = -0.5;
-      }
-    } else if (this.player.x >= block.x && playerRightX <= blockRightX) {
+    if (this.player.x >= block.x && playerRightX <= blockRightX) {
       //If the player is standing on the top of the block flat. no corners involved. It will be grounded on the block
       if (this.player.y <= blockTopY && playerTopY >= blockTopY) {
         this.player.y = blockTopY;
         this.player.velocityY = block.velocityY;
         this.player.isGrounded = true;
       } else if (this.player.y < block.y && playerTopY > block.y) {
+        // If player hits the bottom of the block flat
         this.player.y = block.y - this.player.height;
         this.player.velocityY = -0.5;
+      }
+    } else if (playerRightX > block.x && this.player.x < block.x) {
+      // player is left
+      if (this.player.y <= blockTopY && playerTopY >= blockTopY) {
+        // Player is in topleft corner
+        if (
+          // If the player is moving right and they are further into the corner left then down, then push them horizontally
+          this.player.velocityX > 0 &&
+          playerRightX - block.x < blockTopY - this.player.y
+        ) {
+          this.player.x = block.x - this.player.width; // Pushed left
+          this.player.velocityX = 0;
+        } else {
+          this.player.y = blockTopY; // Player grounded
+          this.player.velocityY = block.velocityY;
+          this.player.isGrounded = true;
+        }
+      } else if (this.player.y <= block.y && playerTopY > block.y) {
+        // Player is in bottomleft corner
+        if (
+          // If the player is moving right and they are further into the corner left then down, then push them horizontally
+          this.player.velocityX > 0 &&
+          playerRightX - block.x < playerTopY - block.y
+        ) {
+          this.player.x = block.x - this.player.width; // Pushed left
+          this.player.velocityX = 0;
+        } else {
+          this.player.y = block.y - this.player.height; // Player bonked
+          this.player.velocityY = -0.5;
+        }
+      }
+    } else if (this.player.x < blockRightX && playerRightX > blockRightX) {
+      // player is right
+      if (this.player.y <= blockTopY && playerTopY >= blockTopY) {
+        // Player is in topright corner
+        if (
+          this.player.velocityX < 0 &&
+          blockRightX - this.player.x < blockTopY - this.player.y
+        ) {
+          this.player.x = blockRightX; // Pushed right
+          this.player.velocityX = 0;
+        } else {
+          this.player.y = blockTopY; // Grounded
+          this.player.velocityY = block.velocityY;
+          this.player.isGrounded = true;
+        }
+      } else if (this.player.y <= block.y && playerTopY > block.y) {
+        // Player is in bottomright corner
+        if (
+          this.player.velocityX < 0 &&
+          blockRightX - this.player.x < playerTopY - block.y
+        ) {
+          this.player.x = blockRightX; // Pushed right
+          this.player.velocityX = 0;
+        } else {
+          this.player.y = block.y - this.player.height; // Grounded
+          this.player.velocityY = -0.5;
+        }
       }
     }
   }
