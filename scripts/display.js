@@ -3,7 +3,7 @@
  */
 const GRADIENTSPAN = 30;
 const MIDSCREEN = 35;
-const BLOCK_COLORS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
+const BLOCK_COLORS = ["red", "orange", "yellow", "green", "blue", "purple"];
 
 class Display {
   constructor(game) {
@@ -22,6 +22,11 @@ class Display {
     // This area is currently the whole screen.
     $("#player").css("left", this.game.world.player.x + "%"); // For every unit in game space, we move the player another percent of the screen.
     $("#player").css("bottom", MIDSCREEN + "%"); // This goes for the y direction too, currenty 1 game unit = 1% screen space relative to direction.
+    $("#floor").css("top", 100 - MIDSCREEN + this.game.world.player.y + "%");
+    $("#lava").css(
+      "bottom",
+      -100 + this.game.world.lavaHeight - this.game.world.player.y + "%"
+    );
 
     while (updatednumBoxes > this.numBoxes) {
       //creates new divs per block in the world
@@ -35,14 +40,23 @@ class Display {
         this.game.world.boxList[this.numBoxes].height + "%"
       );
       $(idStr).css("left", this.game.world.boxList[this.numBoxes].x + "%");
-      $(idStr).css("background-color", BLOCK_COLORS[Math.floor(Math.random() * BLOCK_COLORS.length)]);
+      $(idStr).css(
+        "background-color",
+        BLOCK_COLORS[Math.floor(Math.random() * BLOCK_COLORS.length)]
+      );
 
       this.numBoxes += 1;
     }
 
     for (let i = 0; i < this.numBoxes; i++) {
       $("#" + i).css("left", this.game.world.boxList[i].x + "%");
-      $("#" + i).css("bottom", MIDSCREEN + this.game.world.boxList[i].y - + this.game.world.player.y + "%");
+      $("#" + i).css(
+        "bottom",
+        MIDSCREEN +
+          this.game.world.boxList[i].y -
+          +this.game.world.player.y +
+          "%"
+      );
     }
 
     if (controller.left && controller.right) {

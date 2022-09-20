@@ -16,6 +16,11 @@ body {
   margin: 0;
 }
 
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
 /* ensures that older browsers will display HTML5 elements correctly */
 #live-game {
   position: relative;
@@ -30,6 +35,22 @@ body {
   border: min(5px, 2vw) solid black;
   border-radius: 5%;
   transition: transform 0.1s ease-in-out;
+}
+
+#floor {
+  position: absolute;
+  background-color: gray;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+#lava {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 87, 15, 0.84);
+  z-index: 1;
 }
 
 .right-skew {
@@ -47,47 +68,32 @@ body {
   border-radius: 5%;
 }
 
-.lava {
-  position: absolute;
-  background-color: red;
-  border: min(5px, 2vw) solid black;
-  border-radius: 5%;
-}
-
 .start-button {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
+  -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  margin-top: -50px;
-  margin-left: -100px;
-  border: 0;
-  background: transparent;
-  height: 24px;
-  border-color: transparent transparent transparent green;
+  width: 200px;
+  height: 100px;
   transition: 100ms all ease;
-  border-style: solid;
-  border-width: 37px 37px 37px 60px;
+  z-index: 3;
 }
 
 .pause-button {
-  border: 0;
-  background: transparent;
-  box-sizing: border-box;
-  width: 0;
-  height: 74px;
-  border-color: transparent transparent transparent black;
-  transition: 100ms all ease;
-  border-style: double;
-  border-width: 0px 0 0px 60px;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 100px;
+  height: 100px;
+  z-index: 3;
 }
 
 .redo-button {
-  transform: rotate(90deg);
-  width: 60px;
-  border-style: transparent;
-  border-color: transparent;
-  font-size: 80px;
-  height: 76px;
-  background: transparent;
+  position: absolute;
+  top: 5px;
+  left: 110px;
+  width: 100px;
+  height: 100px;
+  z-index: 3;
 }

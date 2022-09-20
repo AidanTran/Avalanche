@@ -14,17 +14,24 @@
 
   <body>
     <div id="menu">
-      <button class="start-button"></button>
+      <div class="start-button">
+        <img src="./media/StartButton.png" alt="Start Button" />
+      </div>
     </div>
     <div id="live-game">
-      <button class="pause-button"></button>
-      <button class="redo-button">↻</button>
+      <div class="pause-button icon">
+        <img src="./media/PauseButton.png" alt="Pause Button" />
+      </div>
+      <div class="redo-button icon">
+        <img src="./media/RestartButton.png" alt="Restart Button" />
+      </div>
       <div id="player"></div>
       <div id="floor"></div>
       <div id="lava"></div>
     </div>
     <script src="scripts/engine.js"></script>
-    <script src="scripts/game.js"></script>
+    <script src="scripts/game/entities.js"></script>
+    <script src="scripts/game/game.js"></script>
     <script src="scripts/display.js"></script>
     <script src="scripts/controller.js"></script>
     <script src="scripts/app.js"></script>
