@@ -100,6 +100,8 @@ class World {
     /**
      * while loop over list of boxes.
      * Determine whether player collides with any of those boxes. Update player values.
+     * Since Time elapsed is equal to the time it takes to request a frame. Counter will be incremented
+     * by this until it hits 1000 ms (1 sec) and spawn a new block + reset counter
      */
     COUNTER += timeElapsed;
     if (COUNTER >= 1000) {
