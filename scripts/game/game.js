@@ -25,7 +25,6 @@ class Game {
     if (this.world.player.y > this.score) {
       this.score = this.world.player.y;
     }
-    console.log("score: ", this.score);
     return this.world.update(timeElapsed, controller);
   }
 }
