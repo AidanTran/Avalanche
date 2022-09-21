@@ -13,6 +13,7 @@ let COUNTER = 0; //just an int that will increment for everytime engine calls up
 class Game {
   constructor() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
+    this.highScore = 0;
   }
 
   restart() {
@@ -72,6 +73,10 @@ class World {
     if (inLava || hasBeenCrushed) {
       return true;
     }
+    if (this.player.y > this.score) {
+      this.score = this.player.y;
+    }
+    console.log("score: ", this.score);
   }
 
   handleControls(timeElapsed, controller) {
@@ -104,7 +109,7 @@ class World {
      * by this until it hits 1000 ms (1 sec) and spawn a new block + reset counter
      */
     COUNTER += timeElapsed;
-    if (COUNTER >= 900) {
+    if (COUNTER >= 950) {
       //Once counter reaches a certain limit it will spawn a new block and reset
       const randBlockWidth = (Math.random() + 1) * SMBLOCKWIDTH;
       const randBlockHeight = (Math.random() + 1) * SMBLOCKHEIGHT;
