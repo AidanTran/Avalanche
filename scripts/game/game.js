@@ -13,7 +13,7 @@ let COUNTER = 0; //just an int that will increment for everytime engine calls up
 class Game {
   constructor() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
-    this.highScore = 0;
+    this.score = 0;
   }
 
   restart() {
@@ -22,6 +22,10 @@ class Game {
   }
 
   update(timeElapsed, controller) {
+    if (this.world.player.y > this.score) {
+      this.score = this.world.player.y;
+    }
+    console.log("score: ", this.score);
     return this.world.update(timeElapsed, controller);
   }
 }
@@ -73,10 +77,6 @@ class World {
     if (inLava || hasBeenCrushed) {
       return true;
     }
-    if (this.player.y > this.score) {
-      this.score = this.player.y;
-    }
-    console.log("score: ", this.score);
   }
 
   handleControls(timeElapsed, controller) {

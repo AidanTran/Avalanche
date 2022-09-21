@@ -33,3 +33,26 @@ let myEngine = new Engine(update);
 
 window.addEventListener("keydown", keyDownUp);
 window.addEventListener("keyup", keyDownUp);
+
+$(".start-button").on("click", function () {
+  myGame.restart();
+  myDisplay.reset();
+  myDisplay.initialize(myGame);
+  myEngine.start(); // Direct reference to myEngine here, I eventually want to get rid of that.
+  $("#live-game").css("display", "block");
+  $("#menu").css("display", "none");
+});
+
+$(".pause-button").on("click", function () {
+  if (myEngine.done) {
+    myEngine.start();
+  } else {
+    myEngine.pause();
+  }
+});
+
+$(".redo-button").on("click", function () {
+  myEngine.pause();
+  $("#live-game").css("display", "none");
+  $("#menu").css("display", "block");
+});
