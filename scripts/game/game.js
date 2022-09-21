@@ -64,7 +64,7 @@ class World {
     this.player.update(timeElapsed); // Actually calculates player move
     this.lavaHeight += this.lavaRise; // Calculate lava move
     const inLava = this.playerCollideWorld(this.player); // Uses player's new position to see if it collided with the world boundary.
-    this.handleBoxSpawn();
+    this.handleBoxSpawn(timeElapsed);
     const [hasBeenCrushed, hasBeenGrounded] = this.boxUpdateLoop(timeElapsed);
     if (!hasBeenGrounded && isPlayerFalling && this.player.y < prevPlayerY) {
       this.player.isGrounded = false;
@@ -96,13 +96,15 @@ class World {
     this.player.velocityX *= this.friction ** (timeElapsed / TARGETMS); // Reduces the players speed using Friction, adjusted for time.
   }
 
-  handleBoxSpawn() {
+  handleBoxSpawn(timeElapsed) {
     /**
      * while loop over list of boxes.
      * Determine whether player collides with any of those boxes. Update player values.
+     * Since Time elapsed is equal to the time it takes to request a frame. Counter will be incremented
+     * by this until it hits 1000 ms (1 sec) and spawn a new block + reset counter
      */
-    COUNTER += 1;
-    if (COUNTER === 125) {
+    COUNTER += timeElapsed;
+    if (COUNTER >= 900) {
       //Once counter reaches a certain limit it will spawn a new block and reset
       const randBlockWidth = (Math.random() + 1) * SMBLOCKWIDTH;
       const randBlockHeight = (Math.random() + 1) * SMBLOCKHEIGHT;
@@ -110,7 +112,8 @@ class World {
         Math.random() * WORLDWIDTH - 10,
         this.player.y + this.player.height + 60,
         randBlockWidth,
-        randBlockHeight,
+        //randBlockHeight,
+        randBlockWidth, // Making the blocks square
         0,
         (100 / (randBlockWidth * randBlockHeight)) * BLOCKMOVESPEED // 400 is max area of block (20x20)
       );
