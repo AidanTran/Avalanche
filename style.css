@@ -29,6 +29,12 @@ img {
   display: none;
 }
 
+#menu {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
 #player {
   position: absolute;
   background-color: white;
