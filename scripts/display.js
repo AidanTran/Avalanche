@@ -92,5 +92,6 @@ class Display {
     $("#livegame-score").css("position", "relative");
     $("#livegame-score").css("text-align", "right");
     $("#livegame-score").css("font-family", "ArcadeClassic", "sans-serif");
+    $("#livegame-score").css("font-size", "2rem");
   }
 }
