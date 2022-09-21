@@ -93,5 +93,11 @@ class Display {
     $("#livegame-score").css("text-align", "right");
     $("#livegame-score").css("font-family", "ArcadeClassic", "sans-serif");
     $("#livegame-score").css("font-size", "2rem");
+
+    // Time display
+    $("#livegame-time").text("[Insert Time]");
+    $("#livegame-time").css("text-align", "right");
+    $("#livegame-time").css("font-family", "ArcadeClassic", "san-serif");
+    $("#livegame-time").css("font-size", "2rem");
   }
 }

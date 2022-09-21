@@ -120,7 +120,7 @@ class World {
         randBlockWidth, // Making the blocks square
         0,
         //(100 / (randBlockWidth * randBlockHeight)) * BLOCKMOVESPEED // 400 is max area of block (20x20)
-        (0.5 * Math.random() + 0.5) * BLOCKMOVESPEED
+        (0.5 * Math.random() + 0.5) * BLOCKMOVESPEED // Random block speed independent of block size
       );
       this.fallingBoxes.add(this.boxList.length);
       this.boxList.push(newFallingBlock);
