@@ -75,7 +75,7 @@ img {
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  width: 200px;
+  width: 100px;
   height: 100px;
   transition: 100ms all ease;
   z-index: 3;
