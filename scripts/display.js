@@ -84,5 +84,7 @@ class Display {
       (color + GRADIENTSPAN) +
       ", 100%, 80%) 100%)";
     $("#live-game").css("background-image", backgroundString);
+
+    $("#livegame-score").text(Math.floor(game.score));
   }
 }
