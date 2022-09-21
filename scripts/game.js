@@ -15,13 +15,8 @@ class Game {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
   }
 
-  restart() {
-    this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
-    console.log("restarted", this.world);
-  }
-
   update(timeElapsed, controller) {
-    return this.world.update(timeElapsed, controller);
+    this.world.update(timeElapsed, controller);
   }
 }
 
@@ -29,8 +24,8 @@ const PLAYERWIDTH = 5;
 const PLAYERHEIGHT = 8;
 const PLAYERMOVESPEED = 0.2;
 const PLAYERJUMP = 7;
-const INITALLAVAHEIGHT = -40;
-const LAVARISERATE = 0.05;
+const INITALLAVAHEIGHT = -30;
+const LAVARISERATE = 0.5;
 // 3 block sizes
 const LRGBLOCKWIDTH = 30;
 const LRGBLOCKHEIGHT = 30;
@@ -38,7 +33,12 @@ const MBLOCKWIDTH = 20;
 const MBLOCKHEIGHT = 20;
 const SMBLOCKWIDTH = 10;
 const SMBLOCKHEIGHT = 10;
+let randBlockWidth;
+let randBlockHeight;
+
 const BLOCKMOVESPEED = -1;
+const DROPMAX = 50;
+const DROPMIN = -50;
 
 function adjustForTime(value, timeElapsed) {
   return (value * timeElapsed) / TARGETMS;
@@ -49,10 +49,17 @@ class World {
     this.friction = friction;
     this.gravity = gravity;
     this.width = width;
-    this.lavaHeight = INITALLAVAHEIGHT;
-    this.lavaRise = LAVARISERATE;
+    this.lava = new Lava(
+      WORLDWIDTH,
+      INITALLAVAHEIGHT,
+      WORLDWIDTH,
+      WORLDHEIGHT / 3,
+      0,
+      LAVARISERATE
+    );
     this.player = new Player(WORLDWIDTH / 2, 0, PLAYERWIDTH, PLAYERHEIGHT);
     this.fallingBoxes = new Set();
+
     this.boxList = [];
   }
 
@@ -62,15 +69,15 @@ class World {
     const isPlayerFalling = this.player.velocityY < 0;
     const prevPlayerY = this.player.y;
     this.player.update(timeElapsed); // Actually calculates player move
-    this.lavaHeight += this.lavaRise; // Calculate lava move
-    const inLava = this.playerCollideWorld(this.player); // Uses player's new position to see if it collided with the world boundary.
+    this.lava.update(timeElapsed); // Calculate lava move
+    this.playerCollideWorld(this.player); // Uses player's new position to see if it collided with the world boundary.
     this.handleBoxSpawn();
-    const [hasBeenCrushed, hasBeenGrounded] = this.boxUpdateLoop(timeElapsed);
-    if (!hasBeenGrounded && isPlayerFalling && this.player.y < prevPlayerY) {
+    if (
+      !this.boxUpdateLoop(timeElapsed) &&
+      isPlayerFalling &&
+      this.player.y < prevPlayerY
+    ) {
       this.player.isGrounded = false;
-    }
-    if (inLava || hasBeenCrushed) {
-      return true;
     }
   }
 
@@ -102,10 +109,10 @@ class World {
      * Determine whether player collides with any of those boxes. Update player values.
      */
     COUNTER += 1;
-    if (COUNTER === 125) {
+    if (COUNTER === 150) {
       //Once counter reaches a certain limit it will spawn a new block and reset
-      const randBlockWidth = (Math.random() + 1) * SMBLOCKWIDTH;
-      const randBlockHeight = (Math.random() + 1) * SMBLOCKHEIGHT;
+      randBlockWidth = (Math.random() + 1) * SMBLOCKWIDTH;
+      randBlockHeight = (Math.random() + 1) * SMBLOCKHEIGHT;
       const newFallingBlock = new FallingBlock(
         Math.random() * WORLDWIDTH - 10,
         this.player.y + this.player.height + 60,
@@ -122,18 +129,11 @@ class World {
 
   boxUpdateLoop(timeElapsed) {
     let groundedFlag = false;
-    let crushedFlag = false;
     for (let i = 0; i < this.boxList.length; i++) {
       // always have a block falling until hits ground
       this.boxList[i].update(timeElapsed);
-      const [tempCrushed, tempGrounded] = this.playerCollideBlock(
-        this.boxList[i]
-      );
-      if (tempGrounded) {
+      if (this.playerCollideBlock(this.boxList[i])) {
         groundedFlag = true;
-      }
-      if (tempCrushed) {
-        crushedFlag = true;
       }
     }
 
@@ -148,7 +148,7 @@ class World {
         this.fallingBoxes.delete(idx);
       }
     });
-    return [crushedFlag, groundedFlag];
+    return groundedFlag;
   }
 
   playerCollideWorld(entity) {
@@ -166,11 +166,6 @@ class World {
       entity.velocityY = 0;
       entity.isGrounded = true;
     }
-
-    if (entity.y < this.lavaHeight) {
-      return true;
-    }
-    return false;
   }
 
   playerCollideBlock(block) {
@@ -179,7 +174,6 @@ class World {
     const blockRightX = block.x + block.width; //rightmost x cord (block)
     const blockTopY = block.y + block.height; //topmost y cord (block)
     let groundedFlag = false;
-    let crushedFlag = false;
     let bonkFlag = false;
     let leftFlag = false;
     let rightFlag = false;
@@ -190,9 +184,6 @@ class World {
       } else if (this.player.y < block.y && playerTopY > block.y) {
         // If player hits the bottom of the block flat
         bonkFlag = true;
-        if (this.player.isGrounded) {
-          crushedFlag = true;
-        }
       }
     } else if (playerRightX > block.x && this.player.x < block.x) {
       // player is left
@@ -220,9 +211,6 @@ class World {
           leftFlag = true;
         } else {
           bonkFlag = true;
-          if (this.player.isGrounded) {
-            crushedFlag = true;
-          }
         }
       }
     } else if (this.player.x < blockRightX && playerRightX > blockRightX) {
@@ -249,9 +237,6 @@ class World {
           rightFlag = true;
         } else {
           bonkFlag = true;
-          if (this.player.isGrounded) {
-            crushedFlag = true;
-          }
         }
       }
     }
@@ -272,7 +257,7 @@ class World {
       this.player.x = blockRightX; // Pushed right
       this.player.velocityX = 0;
     }
-    return [crushedFlag, groundedFlag];
+    return groundedFlag;
   }
 
   boxCollideBox(idx1, idx2) {
@@ -296,5 +281,72 @@ class World {
     }
 
     return;
+  }
+}
+
+class Entity {
+  constructor(x, y, width, height, velocityX = 0, velocityY = 0) {
+    this.x = x; // Left-most x coordinate
+    this.y = y; // Bottom-most y coordinate
+    this.width = width; // Width of rectange, add to x to get right most x coordinate.
+    this.height = height; // Height of rectangle, add to y to get top most y coordinate
+    this.velocityX = velocityX;
+    this.velocityY = velocityY;
+  }
+
+  update(timeElapsed) {
+    // Adjusts the entities' x and y position from its velocity, adjusted for time.
+    this.x += adjustForTime(this.velocityX, timeElapsed);
+    this.y += adjustForTime(this.velocityY, timeElapsed);
+  }
+}
+
+class Player extends Entity {
+  constructor(x, y, width, height, velocityX = 0, velocityY = 0) {
+    super(x, y, width, height, velocityX, velocityY);
+    this.isGrounded = true;
+  }
+
+  jump() {
+    if (this.isGrounded) {
+      // Should only be able to jump if grounded.
+      this.velocityY += PLAYERJUMP; // Do not need to adjust for time here, jumping is an impulse.
+      this.isGrounded = false;
+    }
+  }
+  moveLeft(timeElapsed) {
+    this.velocityX -= adjustForTime(PLAYERMOVESPEED, timeElapsed);
+  }
+  moveRight(timeElapsed) {
+    this.velocityX += adjustForTime(PLAYERMOVESPEED, timeElapsed);
+  }
+}
+
+class FallingBlock extends Entity {
+  constructor(x, y, width, height, velocityX = 0, velocityY = 0) {
+    super(x, y, width, height, velocityX, velocityY);
+    this.isGrounded = false;
+  }
+
+  update(timeElapsed) {
+    // Adjusts the entities' x and y position from its velocity, adjusted for time.
+    if (!this.isGrounded) {
+      this.y += adjustForTime(this.velocityY, timeElapsed);
+      if (this.y <= 0) {
+        this.isGrounded = true;
+        this.velocityY = 0;
+        this.y = 0;
+      }
+    }
+  }
+}
+class Lava extends Entity {
+  constructor(x, y, width, height, velocityX, velocityY) {
+    super(x, y, width, height, velocityX, velocityY);
+    this.isGrounded = false;
+  }
+  update(timeElapsed) {
+    this.y += adjustForTime(this.velocityY, timeElapsed);
+    this.x += adjustForTime(this.velocityX, timeElapsed);
   }
 }
