@@ -39,8 +39,6 @@ $(".start-button").on("click", function () {
   myDisplay.reset();
   myDisplay.initialize(myGame);
   myEngine.start(); // Direct reference to myEngine here, I eventually want to get rid of that.
-  $("#live-game").css("display", "block");
-  $("#menu").css("display", "none");
 });
 
 $(".pause-button").on("click", function () {
