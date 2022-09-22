@@ -95,7 +95,13 @@ class Display {
     $("#livegame-score").css("font-size", "2rem");
 
     // Time display
-    $("#livegame-time").text("[Insert Time]");
+    $("#livegame-time").text(
+      game.minutes,
+      " : ",
+      game.seconds,
+      " : ",
+      game.milliseconds
+    );
     $("#livegame-time").css("text-align", "right");
     $("#livegame-time").css("font-family", "ArcadeClassic", "san-serif");
     $("#livegame-time").css("font-size", "2rem");
