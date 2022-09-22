@@ -14,11 +14,27 @@ class Display {
   initialize(game) {
     $("#player").css("width", game.world.player.width + "%");
     $("#player").css("height", game.world.player.height + "%");
+    $("#live-game").css("display", "block");
+    $("#menu").css("display", "none");
+    this.findAspectRatio();
   }
 
   reset() {
     this.numBoxes = 0;
     $(".boxes").remove();
+  }
+
+  findAspectRatio(){
+    const windowWidth = window.screen.width;
+    const windowHeight = window.screen.height;
+    if (windowHeight > windowWidth){
+      $("#live-game").css("width", windowWidth);
+      $("#live-game").css("aspect-ratio", 1 / 1);
+    }
+    else{
+      $("#live-game").css("height", windowHeight);
+      $("#live-game").css("aspect-ratio", 1 / 1);
+    }
   }
 
   render(controller, game) {
