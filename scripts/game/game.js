@@ -13,6 +13,7 @@ let COUNTER = 0; //just an int that will increment for everytime engine calls up
 class Game {
   constructor() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
+    this.score = 0;
   }
 
   restart() {
@@ -21,6 +22,9 @@ class Game {
   }
 
   update(timeElapsed, controller) {
+    if (this.world.player.y > this.score) {
+      this.score = this.world.player.y;
+    }
     return this.world.update(timeElapsed, controller);
   }
 }
@@ -112,7 +116,8 @@ class World {
         Math.random() * WORLDWIDTH - 10,
         this.player.y + this.player.height + 60,
         randBlockWidth,
-        randBlockHeight,
+        //randBlockHeight,
+        randBlockWidth, // Making the blocks square
         0,
         (100 / (randBlockWidth * randBlockHeight)) * BLOCKMOVESPEED // 400 is max area of block (20x20)
       );
@@ -280,11 +285,14 @@ class World {
 
   boxCollideBox(idx1, idx2) {
     //idx1 falling
-    //idx2 grounded
+    //idx2 grounded, sidenote we now check both falling and grounded blocks so "grounded" could 
+    //very much be not grounded at all. imma rename these to... uhh block1 and block2 or topblock, bottomblock
     const falling = this.boxList[idx1];
     const grounded = this.boxList[idx2];
 
-    if (falling.y < grounded.y + grounded.height) {
+    if (falling.y < grounded.y + grounded.height &&
+      falling.y + falling.height > grounded.y + grounded.height
+    ) {
       if (
         (falling.x <= grounded.x && falling.x + falling.width >= grounded.x) ||
         (falling.x + falling.width >= grounded.x + grounded.width &&
@@ -292,9 +300,15 @@ class World {
         (falling.x >= grounded.x &&
           falling.x + falling.width <= grounded.x + grounded.width)
       ) {
-        falling.isGrounded = true;
-        falling.velocityY = 0;
-        falling.y = grounded.y + grounded.height;
+        if (grounded.isGrounded){
+          falling.isGrounded = true;
+          falling.velocityY = 0;
+          falling.y = grounded.y + grounded.height;
+        }
+        else{
+          falling.velocityY = grounded.velocityY;
+          falling.y = grounded.y + grounded.height;
+        }
       }
     }
 

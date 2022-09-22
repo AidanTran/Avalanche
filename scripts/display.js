@@ -84,5 +84,14 @@ class Display {
       (color + GRADIENTSPAN) +
       ", 100%, 80%) 100%)";
     $("#live-game").css("background-image", backgroundString);
+
+    // Score display
+    $("#livegame-score").text(
+      Math.floor(game.score).toString().padStart(8, "0")
+    );
+    $("#livegame-score").css("position", "relative");
+    $("#livegame-score").css("text-align", "right");
+    $("#livegame-score").css("font-family", "ArcadeClassic", "sans-serif");
+    $("#livegame-score").css("font-size", "2rem");
   }
 }
