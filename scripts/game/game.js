@@ -104,7 +104,7 @@ class World {
      * by this until it hits 1000 ms (1 sec) and spawn a new block + reset counter
      */
     COUNTER += timeElapsed;
-    if (COUNTER >= 1000) {
+    if (COUNTER >= 800) {
       //Once counter reaches a certain limit it will spawn a new block and reset
       const randBlockWidth = (Math.random() + 1) * SMBLOCKWIDTH;
       const randBlockHeight = (Math.random() + 1) * SMBLOCKHEIGHT;
@@ -139,9 +139,10 @@ class World {
       }
     }
 
+    //this.fallingBoxes.has(i)
     this.fallingBoxes.forEach((idx) => {
       for (let i = 0; i < this.boxList.length; i++) {
-        if (this.fallingBoxes.has(i)) {
+        if (idx === i) {
           continue;
         }
         this.boxCollideBox(idx, i);
