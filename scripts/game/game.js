@@ -8,7 +8,7 @@ const GROUNDEDGRAVITY = 0.001;
 const MAXFALL = -3;
 const WORLDWIDTH = 100;
 const WORLDHEIGHT = 90;
-let COUNTER = 0; //just an int that will increment for everytime engine calls update
+let COUNTER = 0; //just an int that will increment for everytime engine calls update (which it constantly is every frame)
 
 class Game {
   constructor() {
@@ -105,7 +105,7 @@ class World {
      * while loop over list of boxes.
      * Determine whether player collides with any of those boxes. Update player values.
      * Since Time elapsed is equal to the time it takes to request a frame. Counter will be incremented
-     * by this until it hits 1000 ms (1 sec) and spawn a new block + reset counter
+     * by this until it hits a certain ms limit and spawn a new block + reset counter
      */
     COUNTER += timeElapsed;
     if (COUNTER >= 950) {
@@ -126,7 +126,6 @@ class World {
       COUNTER = 0;
     }
   }
-
   boxUpdateLoop(timeElapsed) {
     let groundedFlag = false;
     let crushedFlag = false;
@@ -144,9 +143,12 @@ class World {
       }
     }
 
+    /*for each fallingbox in fallingboxes set (denoted by its index in the main boxlist array) loop through
+    entire boxlist and calculaute boxcollision. If it runs into itself in the array continue the loop without
+    calculation. */
     this.fallingBoxes.forEach((idx) => {
       for (let i = 0; i < this.boxList.length; i++) {
-        if (this.fallingBoxes.has(i)) {
+        if (idx === i) {
           continue;
         }
         this.boxCollideBox(idx, i);
@@ -283,25 +285,37 @@ class World {
   }
 
   boxCollideBox(idx1, idx2) {
-    //idx1 falling
-    //idx2 grounded
-    const falling = this.boxList[idx1];
-    const grounded = this.boxList[idx2];
+    //idx1 topBlock
+    //idx2 bottomBlock
+    const topBlock = this.boxList[idx1];
+    const bottomBlock = this.boxList[idx2];
 
-    if (falling.y < grounded.y + grounded.height) {
+    //first if statement determines if top block and bottom block collided in terms of Y coordinate
+    if (topBlock.y < bottomBlock.y + bottomBlock.height &&
+      topBlock.y + topBlock.height > bottomBlock.y + bottomBlock.height
+    ) {
+      //if so, now we need to check if the x coordinates are taking up the same space as well
       if (
-        (falling.x <= grounded.x && falling.x + falling.width >= grounded.x) ||
-        (falling.x + falling.width >= grounded.x + grounded.width &&
-          falling.x <= grounded.x + grounded.width) ||
-        (falling.x >= grounded.x &&
-          falling.x + falling.width <= grounded.x + grounded.width)
+        (topBlock.x <= bottomBlock.x && topBlock.x + topBlock.width >= bottomBlock.x) ||
+        (topBlock.x + topBlock.width >= bottomBlock.x + bottomBlock.width &&
+          topBlock.x <= bottomBlock.x + bottomBlock.width) ||
+        (topBlock.x >= bottomBlock.x &&
+          topBlock.x + topBlock.width <= bottomBlock.x + bottomBlock.width)
       ) {
-        falling.isGrounded = true;
-        falling.velocityY = 0;
-        falling.y = grounded.y + grounded.height;
+        /* if all true then the blocks are touching eachother, now to determine if the two blocks are both falling
+        or if 1 is grounded. If both falling, top block will match bottom block's speed and if one is grounded the second
+        one will also be grounded.*/
+        if (bottomBlock.isGrounded){
+          topBlock.isGrounded = true;
+          topBlock.velocityY = 0;
+          topBlock.y = bottomBlock.y + bottomBlock.height;
+        }
+        else{
+          topBlock.velocityY = bottomBlock.velocityY;
+          topBlock.y = bottomBlock.y + bottomBlock.height;
+        }
       }
     }
-
     return;
   }
 }
