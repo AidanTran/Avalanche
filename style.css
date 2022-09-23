@@ -27,6 +27,7 @@ img {
 /*   width: 100vw;
   height: 100vh; */
   display: none;
+  aspect-ratio: 1;
 }
 
 #menu {

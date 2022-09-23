@@ -25,15 +25,15 @@ class Display {
   }
 
   findAspectRatio(){
-    const windowWidth = window.screen.width;
-    const windowHeight = window.screen.height;
+    let windowWidth = window.screen.width;
+    let windowHeight = window.screen.height;
     if (windowHeight > windowWidth){
-      $("#live-game").css("width", windowWidth);
-      $("#live-game").css("aspect-ratio", 1 / 1);
+      $("#live-game").css("width", "100vw");
+      $("#live-game").css("margin", "auto");
     }
     else{
-      $("#live-game").css("height", windowHeight);
-      $("#live-game").css("aspect-ratio", 1 / 1);
+      $("#live-game").css("height", "100vh");
+      $("#live-game").css("margin", "auto");
     }
   }
 
@@ -56,7 +56,7 @@ class Display {
         '<div class="boxes" id=' + this.numBoxes.toString() + "></div>"
       ).appendTo("#live-game");
       const idStr = "#" + this.numBoxes.toString();
-      $(idStr).css("width", game.world.boxList[this.numBoxes].width + "%");
+      $(idStr).css("width", game.world.boxList[this.numBoxes].width + "%",);
       $(idStr).css("height", game.world.boxList[this.numBoxes].height + "%");
       $(idStr).css("left", game.world.boxList[this.numBoxes].x + "%");
       $(idStr).css(
