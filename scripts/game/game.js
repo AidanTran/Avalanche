@@ -3,7 +3,7 @@
  */
 const TARGETMS = 16.6667; // const variable. 16.6667 is 60 fps, this is for force calculations when framerate is unstable.
 const FRICTION = 0.85; // How fast player.velocityX shrinks.
-const GRAVITY = 0.6; // How fast player falls.
+const GRAVITY = 0.4; // How fast player falls.
 const GROUNDEDGRAVITY = 0.001;
 const MAXFALL = -3;
 const WORLDWIDTH = 100;
@@ -32,7 +32,7 @@ class Game {
 const PLAYERWIDTH = 5;
 const PLAYERHEIGHT = 8;
 const PLAYERMOVESPEED = 0.2;
-const PLAYERJUMP = 7;
+const PLAYERJUMP = 6;
 const INITALLAVAHEIGHT = -40;
 const LAVARISERATE = 0.05;
 // 3 block sizes
@@ -291,12 +291,14 @@ class World {
     const bottomBlock = this.boxList[idx2];
 
     //first if statement determines if top block and bottom block collided in terms of Y coordinate
-    if (topBlock.y < bottomBlock.y + bottomBlock.height &&
+    if (
+      topBlock.y < bottomBlock.y + bottomBlock.height &&
       topBlock.y + topBlock.height > bottomBlock.y + bottomBlock.height
     ) {
       //if so, now we need to check if the x coordinates are taking up the same space as well
       if (
-        (topBlock.x <= bottomBlock.x && topBlock.x + topBlock.width >= bottomBlock.x) ||
+        (topBlock.x <= bottomBlock.x &&
+          topBlock.x + topBlock.width >= bottomBlock.x) ||
         (topBlock.x + topBlock.width >= bottomBlock.x + bottomBlock.width &&
           topBlock.x <= bottomBlock.x + bottomBlock.width) ||
         (topBlock.x >= bottomBlock.x &&
@@ -305,12 +307,11 @@ class World {
         /* if all true then the blocks are touching eachother, now to determine if the two blocks are both falling
         or if 1 is grounded. If both falling, top block will match bottom block's speed and if one is grounded the second
         one will also be grounded.*/
-        if (bottomBlock.isGrounded){
+        if (bottomBlock.isGrounded) {
           topBlock.isGrounded = true;
           topBlock.velocityY = 0;
           topBlock.y = bottomBlock.y + bottomBlock.height;
-        }
-        else{
+        } else {
           topBlock.velocityY = bottomBlock.velocityY;
           topBlock.y = bottomBlock.y + bottomBlock.height;
         }
