@@ -162,7 +162,7 @@ class World {
 
   playerCollideWorld(entity) {
     // Takes an entity as a parameter and sets it's position and velocity so that it can't escape the world bounds.
-    if (entity.x < 0) {
+    if (entity.x + entity.width <= 0) {
       // Check left of world
       entity.x = this.width;
     } else if (entity.x >= this.width) {
