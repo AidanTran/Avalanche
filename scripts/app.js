@@ -24,6 +24,7 @@ let update = function (timeElapsed) {
       this.pause();
       $("#live-game").css("display", "none");
       $("#menu").css("display", "block");
+      $("#highScore").text("High Score: "+parseInt($("#livegame-score").text(), 10));
     }
     myDisplay.render(myController, myGame);
   }

@@ -21,6 +21,13 @@ img {
   max-height: 100%;
 }
 
+h1{
+  text-align:center;
+}
+h2{
+  text-align:center;
+}
+
 /* ensures that older browsers will display HTML5 elements correctly */
 #live-game {
   position: relative;
