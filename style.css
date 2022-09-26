@@ -104,3 +104,7 @@ img {
   height: 100px;
   z-index: 3;
 }
+
+#livegame-score {
+  z-index: 3;
+}
