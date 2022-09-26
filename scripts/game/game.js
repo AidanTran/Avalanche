@@ -14,14 +14,29 @@ class Game {
   constructor() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
     this.score = 0;
+    this.timeMilliseconds = 0;
+    this.timeSeconds = 0;
+    this.timeMinutes = 0;
   }
 
   restart() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
+    this.timeMilliseconds = 0;
+    this.timeSeconds = 0;
+    this.timeMinutes = 0;
     console.log("restarted", this.world);
   }
 
   update(timeElapsed, controller) {
+    this.timeMilliseconds += timeElapsed;
+    if (this.timeMilliseconds >= 1000) {
+      this.timeSeconds += 1;
+      this.timeMilliseconds = 0;
+    }
+    if (this.timeSeconds >= 60) {
+      this.timeMinutes += 1;
+      this.timeSeconds = 0;
+    }
     if (this.world.player.y > this.score) {
       this.score = this.world.player.y;
     }
@@ -119,7 +134,8 @@ class World {
         //randBlockHeight,
         randBlockWidth, // Making the blocks square
         0,
-        (100 / (randBlockWidth * randBlockHeight)) * BLOCKMOVESPEED // 400 is max area of block (20x20)
+        //(100 / (randBlockWidth * randBlockHeight)) * BLOCKMOVESPEED // 400 is max area of block (20x20)
+        (0.5 * Math.random() + 0.5) * BLOCKMOVESPEED // Random block speed independent of block size
       );
       this.fallingBoxes.add(this.boxList.length);
       this.boxList.push(newFallingBlock);
