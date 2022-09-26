@@ -14,9 +14,7 @@ class Display {
   initialize(game) {
     $("#player").css("width", game.world.player.width + "%");
     $("#player").css("height", game.world.player.height + "%");
-    $("#live-game").css("display", "block");
-    $("#menu").css("display", "none");
-    this.findAspectRatio();
+    this.setAspectRatio();
   }
 
   reset() {
@@ -24,16 +22,21 @@ class Display {
     $(".boxes").remove();
   }
 
-  findAspectRatio(){
+  setAspectRatio(){
     let windowWidth = window.screen.width;
     let windowHeight = window.screen.height;
     if (windowHeight > windowWidth){
       $("#live-game").css("width", "100vw");
-      $("#live-game").css("margin", "auto");
+      $("#live-game").css("margin", "auto"); //centers div
     }
     else{
       $("#live-game").css("height", "100vh");
       $("#live-game").css("margin", "auto");
+      let whiteSpaceWidth = (100 - ( window.screen.height/window.screen.width * 100))/2;
+      //const whiteSpaceWidth = (window.screen.width - window.screen.height) / 2
+      console.log(whiteSpaceWidth);
+      $("#whiteSpace1").css("width", whiteSpaceWidth + "%");
+
     }
   }
 
