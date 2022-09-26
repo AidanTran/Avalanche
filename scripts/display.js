@@ -14,6 +14,7 @@ class Display {
   initialize(game) {
     $("#player").css("width", game.world.player.width + "%");
     $("#player").css("height", game.world.player.height + "%");
+    $("#prevScoreLine").css("y", game.prevScore);
   }
 
   reset() {

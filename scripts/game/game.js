@@ -14,6 +14,7 @@ class Game {
   constructor() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
     this.score = 0;
+    this.prevScore = 0;
     this.timeMilliseconds = 0;
     this.timeSeconds = 0;
     this.timeMinutes = 0;
@@ -21,6 +22,7 @@ class Game {
 
   restart() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
+    this.prevScore = this.score;
     this.score = 0;
     this.timeMilliseconds = 0;
     this.timeSeconds = 0;
@@ -144,7 +146,7 @@ class World {
     let groundedFlag = false;
     let crushedFlag = false;
     for (let i = 0; i < this.boxList.length; i++) {
-      // always have a block falling until hits ground
+      // Always have a block falling until hits ground
       this.boxList[i].update(timeElapsed);
       const [tempCrushed, tempGrounded] = this.playerCollideBlock(
         this.boxList[i]
