@@ -127,15 +127,12 @@ class World {
     if (COUNTER >= 950) {
       //Once counter reaches a certain limit it will spawn a new block and reset
       const randBlockWidth = (Math.random() + 1) * SMBLOCKWIDTH;
-      const randBlockHeight = (Math.random() + 1) * SMBLOCKHEIGHT;
       const newFallingBlock = new FallingBlock(
         Math.random() * WORLDWIDTH - 10,
         this.player.y + this.player.height + 60,
         randBlockWidth,
-        //randBlockHeight,
         randBlockWidth, // Making the blocks square
         0,
-        //(100 / (randBlockWidth * randBlockHeight)) * BLOCKMOVESPEED // 400 is max area of block (20x20)
         (0.5 * Math.random() + 0.5) * BLOCKMOVESPEED // Random block speed independent of block size
       );
       this.fallingBoxes.add(this.boxList.length);

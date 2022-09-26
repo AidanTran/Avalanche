@@ -21,11 +21,11 @@ img {
   max-height: 100%;
 }
 
-h1{
-  text-align:center;
+h1 {
+  text-align: center;
 }
-h2{
-  text-align:center;
+h2 {
+  text-align: center;
 }
 
 /* ensures that older browsers will display HTML5 elements correctly */
@@ -119,4 +119,8 @@ h2{
   font-family: ArcadeClassic;
   font-size: 2rem;
   margin-right: 5px;
+}
+
+#prevScoreLine {
+  border-bottom: 3px solid #000000;
 }
