@@ -93,5 +93,17 @@ class Display {
     $("#livegame-score").css("text-align", "right");
     $("#livegame-score").css("font-family", "ArcadeClassic", "sans-serif");
     $("#livegame-score").css("font-size", "2rem");
+
+    // Time display
+    $("#livegame-time").text(
+      game.timeMinutes.toString().padStart(2, "0") +
+        ":" +
+        game.timeSeconds.toString().padStart(2, "0") +
+        ":" +
+        Math.floor(game.timeMilliseconds).toString().padStart(3, "0")
+    );
+    $("#livegame-time").css("text-align", "right");
+    $("#livegame-time").css("font-family", "ArcadeClassic", "san-serif");
+    $("#livegame-time").css("font-size", "2rem");
   }
 }
