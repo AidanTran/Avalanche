@@ -31,9 +31,8 @@ h2{
 /* ensures that older browsers will display HTML5 elements correctly */
 #live-game {
   position: relative;
-  width: 100vw;
-  height: 100vh;
   display: none;
+  aspect-ratio: 1;
 }
 
 #menu {
@@ -119,4 +118,5 @@ h2{
   font-family: ArcadeClassic;
   font-size: 2rem;
   margin-right: 5px;
+  z-index: 2;
 }
