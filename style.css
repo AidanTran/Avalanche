@@ -94,7 +94,6 @@ h2{
   width: 100px;
   height: 100px;
   transition: 100ms all ease;
-  z-index: 3;
 }
 
 .pause-button {
@@ -103,7 +102,6 @@ h2{
   left: 5px;
   width: 100px;
   height: 100px;
-  z-index: 3;
 }
 
 .redo-button {
@@ -112,7 +110,6 @@ h2{
   left: 110px;
   width: 100px;
   height: 100px;
-  z-index: 3;
 }
 
 .livegame-tracker {
@@ -121,4 +118,5 @@ h2{
   font-family: ArcadeClassic;
   font-size: 2rem;
   margin-right: 5px;
+  z-index: 2;
 }
