@@ -21,6 +21,7 @@ class Game {
 
   restart() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
+    this.score = 0;
     this.timeMilliseconds = 0;
     this.timeSeconds = 0;
     this.timeMinutes = 0;
