@@ -95,13 +95,6 @@ class Display {
     $("#livegame-score").css("font-size", "2rem");
 
     // Time display
-    // $("#livegame-time").text(
-    //   game.minutes,
-    //   " : ",
-    //   game.seconds,
-    //   " : ",
-    //   game.milliseconds
-    // );
     $("#livegame-time").text(
       game.timeMinutes.toString().padStart(2, "0") +
         ":" +
