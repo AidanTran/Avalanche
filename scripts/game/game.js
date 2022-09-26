@@ -3,7 +3,7 @@
  */
 const TARGETMS = 16.6667; // const variable. 16.6667 is 60 fps, this is for force calculations when framerate is unstable.
 const FRICTION = 0.85; // How fast player.velocityX shrinks.
-const GRAVITY = 0.6; // How fast player falls.
+const GRAVITY = 0.4; // How fast player falls.
 const GROUNDEDGRAVITY = 0.001;
 const MAXFALL = -3;
 const WORLDWIDTH = 100;
@@ -14,14 +14,29 @@ class Game {
   constructor() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
     this.score = 0;
+    this.timeMilliseconds = 0;
+    this.timeSeconds = 0;
+    this.timeMinutes = 0;
   }
 
   restart() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
+    this.timeMilliseconds = 0;
+    this.timeSeconds = 0;
+    this.timeMinutes = 0;
     console.log("restarted", this.world);
   }
 
   update(timeElapsed, controller) {
+    this.timeMilliseconds += timeElapsed;
+    if (this.timeMilliseconds >= 1000) {
+      this.timeSeconds += 1;
+      this.timeMilliseconds = 0;
+    }
+    if (this.timeSeconds >= 60) {
+      this.timeMinutes += 1;
+      this.timeSeconds = 0;
+    }
     if (this.world.player.y > this.score) {
       this.score = this.world.player.y;
     }
@@ -32,9 +47,9 @@ class Game {
 const PLAYERWIDTH = 5;
 const PLAYERHEIGHT = 8;
 const PLAYERMOVESPEED = 0.2;
-const PLAYERJUMP = 7;
-const INITALLAVAHEIGHT = -40;
-const LAVARISERATE = 0.05;
+const PLAYERJUMP = 6;
+const INITALLAVAHEIGHT = -70;
+const LAVARISERATE = 0.08;
 // 3 block sizes
 const LRGBLOCKWIDTH = 30;
 const LRGBLOCKHEIGHT = 30;
@@ -119,7 +134,8 @@ class World {
         //randBlockHeight,
         randBlockWidth, // Making the blocks square
         0,
-        (100 / (randBlockWidth * randBlockHeight)) * BLOCKMOVESPEED // 400 is max area of block (20x20)
+        //(100 / (randBlockWidth * randBlockHeight)) * BLOCKMOVESPEED // 400 is max area of block (20x20)
+        (0.5 * Math.random() + 0.5) * BLOCKMOVESPEED // Random block speed independent of block size
       );
       //this.boxCollideWorld(newFallingBlock);
       this.fallingBoxes.add(this.boxList.length);
@@ -169,7 +185,7 @@ class World {
   }
   playerCollideWorld(entity) {
     // Takes an entity as a parameter and sets it's position and velocity so that it can't escape the world bounds.
-    if (entity.x < 0) {
+    if (entity.x + entity.width <= 0) {
       // Check left of world
       entity.x = this.width;
     } else if (entity.x >= this.width) {
@@ -298,12 +314,14 @@ class World {
     const bottomBlock = this.boxList[idx2];
 
     //first if statement determines if top block and bottom block collided in terms of Y coordinate
-    if (topBlock.y < bottomBlock.y + bottomBlock.height &&
+    if (
+      topBlock.y < bottomBlock.y + bottomBlock.height &&
       topBlock.y + topBlock.height > bottomBlock.y + bottomBlock.height
     ) {
       //if so, now we need to check if the x coordinates are taking up the same space as well
       if (
-        (topBlock.x <= bottomBlock.x && topBlock.x + topBlock.width >= bottomBlock.x) ||
+        (topBlock.x <= bottomBlock.x &&
+          topBlock.x + topBlock.width >= bottomBlock.x) ||
         (topBlock.x + topBlock.width >= bottomBlock.x + bottomBlock.width &&
           topBlock.x <= bottomBlock.x + bottomBlock.width) ||
         (topBlock.x >= bottomBlock.x &&
@@ -312,12 +330,11 @@ class World {
         /* if all true then the blocks are touching eachother, now to determine if the two blocks are both falling
         or if 1 is grounded. If both falling, top block will match bottom block's speed and if one is grounded the second
         one will also be grounded.*/
-        if (bottomBlock.isGrounded){
+        if (bottomBlock.isGrounded) {
           topBlock.isGrounded = true;
           topBlock.velocityY = 0;
           topBlock.y = bottomBlock.y + bottomBlock.height;
-        }
-        else{
+        } else {
           topBlock.velocityY = bottomBlock.velocityY;
           topBlock.y = bottomBlock.y + bottomBlock.height;
         }

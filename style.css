@@ -21,6 +21,13 @@ img {
   max-height: 100%;
 }
 
+h1{
+  text-align:center;
+}
+h2{
+  text-align:center;
+}
+
 /* ensures that older browsers will display HTML5 elements correctly */
 #live-game {
   position: relative;
@@ -58,7 +65,7 @@ img {
   width: 100%;
   height: 100%;
   background-color: rgba(255, 87, 15, 0.84);
-  z-index: 3;
+  z-index: 2;
 }
 
 .right-skew {
@@ -76,6 +83,10 @@ img {
   border-radius: 5%;
 }
 
+.in-front {
+  z-index: 3;
+}
+
 .start-button {
   position: absolute;
   top: 50%;
@@ -85,7 +96,6 @@ img {
   width: 100px;
   height: 100px;
   transition: 100ms all ease;
-  z-index: 3;
 }
 
 .pause-button {
@@ -94,7 +104,6 @@ img {
   left: 5px;
   width: 100px;
   height: 100px;
-  z-index: 3;
 }
 
 .redo-button {
@@ -103,7 +112,14 @@ img {
   left: 110px;
   width: 100px;
   height: 100px;
-  z-index: 3;
+}
+
+.livegame-tracker {
+  position: relative;
+  text-align: right;
+  font-family: ArcadeClassic;
+  font-size: 2rem;
+  margin-right: 5px;
 }
 
 #whiteSpace1{

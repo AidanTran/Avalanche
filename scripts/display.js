@@ -108,9 +108,14 @@ class Display {
     $("#livegame-score").text(
       Math.floor(game.score).toString().padStart(8, "0")
     );
-    $("#livegame-score").css("position", "relative");
-    $("#livegame-score").css("text-align", "right");
-    $("#livegame-score").css("font-family", "ArcadeClassic", "sans-serif");
-    $("#livegame-score").css("font-size", "2rem");
+
+    // Time display
+    $("#livegame-time").text(
+      game.timeMinutes.toString().padStart(2, "0") +
+        ":" +
+        game.timeSeconds.toString().padStart(2, "0") +
+        ":" +
+        Math.floor(game.timeMilliseconds).toString().padStart(3, "0")
+    );
   }
 }
