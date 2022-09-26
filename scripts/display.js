@@ -95,12 +95,19 @@ class Display {
     $("#livegame-score").css("font-size", "2rem");
 
     // Time display
+    // $("#livegame-time").text(
+    //   game.minutes,
+    //   " : ",
+    //   game.seconds,
+    //   " : ",
+    //   game.milliseconds
+    // );
     $("#livegame-time").text(
-      game.minutes,
-      " : ",
-      game.seconds,
-      " : ",
-      game.milliseconds
+      game.timeMinutes.toString().padStart(2, "0") +
+        ":" +
+        game.timeSeconds.toString().padStart(2, "0") +
+        ":" +
+        Math.floor(game.timeMilliseconds).toString().padStart(3, "0")
     );
     $("#livegame-time").css("text-align", "right");
     $("#livegame-time").css("font-family", "ArcadeClassic", "san-serif");

@@ -14,14 +14,29 @@ class Game {
   constructor() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
     this.score = 0;
+    this.timeMilliseconds = 0;
+    this.timeSeconds = 0;
+    this.timeMinutes = 0;
   }
 
   restart() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
+    this.timeMilliseconds = 0;
+    this.timeSeconds = 0;
+    this.timeMinutes = 0;
     console.log("restarted", this.world);
   }
 
   update(timeElapsed, controller) {
+    this.timeMilliseconds += timeElapsed;
+    if (this.timeMilliseconds >= 1000) {
+      this.timeSeconds += 1;
+      this.timeMilliseconds = 0;
+    }
+    if (this.timeSeconds >= 60) {
+      this.timeMinutes += 1;
+      this.timeSeconds = 0;
+    }
     if (this.world.player.y > this.score) {
       this.score = this.world.player.y;
     }
