@@ -31,8 +31,6 @@ h2{
 /* ensures that older browsers will display HTML5 elements correctly */
 #live-game {
   position: relative;
-/*   width: 100vw;
-  height: 100vh; */
   display: none;
   aspect-ratio: 1;
 }
@@ -120,12 +118,4 @@ h2{
   font-family: ArcadeClassic;
   font-size: 2rem;
   margin-right: 5px;
-}
-
-#whiteSpace1{
-  position:absolute;
-  z-index: 5;
-  background-color: red;
-  height: 100vh;
-  margin-right: auto;
 }

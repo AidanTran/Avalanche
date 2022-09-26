@@ -32,11 +32,6 @@ class Display {
     else{
       $("#live-game").css("height", "100vh");
       $("#live-game").css("margin", "auto");
-      let whiteSpaceWidth = (100 - ( window.screen.height/window.screen.width * 100))/2;
-      //const whiteSpaceWidth = (window.screen.width - window.screen.height) / 2
-      console.log(whiteSpaceWidth);
-      $("#whiteSpace1").css("width", whiteSpaceWidth + "%");
-
     }
   }
 
