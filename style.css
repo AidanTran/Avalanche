@@ -105,11 +105,3 @@ img {
   height: 100px;
   z-index: 3;
 }
-
-#whiteSpace1{
-  position:absolute;
-  z-index: 5;
-  background-color: red;
-  height: 100vh;
-  margin-right: auto;
-}
