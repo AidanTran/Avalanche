@@ -125,5 +125,6 @@ h2 {
   position: absolute;
   width: 100%;
   border-bottom: 3px solid #6a6868ec;
+  border-style: none none dotted none;
   opacity: 100%;
 }

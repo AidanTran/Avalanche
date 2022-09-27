@@ -104,7 +104,5 @@ class Display {
       "top",
       65 - game.prevScore + game.world.player.y + "%"
     );
-    console.log("player", game.world.player.y);
-    console.log("line", game.prevScore - game.world.player.y);
   }
 }
