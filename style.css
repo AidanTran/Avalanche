@@ -4,11 +4,12 @@
 html,
 body {
   min-height: 100%;
-  background: #fff;
-  color: #000;
+  background: darkolivegreen;
+  color: #fff;
   max-width: 100%;
   overflow-y: hidden;
   overflow-x: hidden;
+  font-family: ArcadeClassic;
 }
 /* sets the body height of the browser, so that backgrounds and div heights work correctly. Color and background will almost certainly be altered; they are just placeholders */
 
@@ -28,11 +29,32 @@ h2 {
   text-align: center;
 }
 
+#live-game-parent {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
 /* ensures that older browsers will display HTML5 elements correctly */
 #live-game {
   position: relative;
   display: none;
-  aspect-ratio: 1;
+  height: min(100vw, 100vh);
+  width: min(100vw, 100vh);
+  margin: auto;
+  color: black;
+}
+
+#live-game::after {
+  content: "";
+  position: absolute;
+  display: block;
+  height: min(100vw, 100vh);
+  width: min(100vw, 100vh);
+  margin: auto;
+  outline: max(100vw, 100vh) solid darkolivegreen;
+  z-index: 10;
+  pointer-events: none;
 }
 
 #menu {
@@ -62,7 +84,7 @@ h2 {
   opacity: 80%;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 87, 15, 0.84);
+  background-color: rgba(255, 87, 15);
   z-index: 2;
 }
 
@@ -96,28 +118,29 @@ h2 {
   transition: 100ms all ease;
 }
 
-.pause-button {
+.button-section {
   position: absolute;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
   top: 5px;
   left: 5px;
-  width: 100px;
-  height: 100px;
+  z-index: 3;
 }
 
-.redo-button {
-  position: absolute;
-  top: 5px;
-  left: 110px;
-  width: 100px;
-  height: 100px;
+.button {
+  display: block;
+  width: min(100px, min(20vh, 20vw));
+  height: min(100px, min(20vh, 20vw));
 }
 
 .livegame-tracker {
-  position: relative;
+  position: absolute;
   text-align: right;
-  font-family: ArcadeClassic;
-  font-size: 2rem;
+  right: 0;
+  font-size: min(3rem, min(10vh, 10vw));
   margin-right: 5px;
+  z-index: 3;
 }
 
 #prevScoreLine {
@@ -127,4 +150,8 @@ h2 {
   border-style: none none dotted none;
   opacity: 100%;
   font-family: "Calibri, sans-serif";
+}
+
+#music {
+  display: none;
 }
