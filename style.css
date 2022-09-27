@@ -21,11 +21,11 @@ img {
   max-height: 100%;
 }
 
-h1{
-  text-align:center;
+h1 {
+  text-align: center;
 }
-h2{
-  text-align:center;
+h2 {
+  text-align: center;
 }
 
 /* ensures that older browsers will display HTML5 elements correctly */
@@ -118,5 +118,18 @@ h2{
   font-family: ArcadeClassic;
   font-size: 2rem;
   margin-right: 5px;
+<<<<<<< HEAD
+}
+
+#prevScoreLine {
+  position: absolute;
+  width: 100%;
+  border-bottom: 3px solid #6a6868ec;
+  border-style: none none dotted none;
+  opacity: 100%;
+  font-family: "Calibri, sans-serif";
+}
+=======
   z-index: 2;
 }
+>>>>>>> d22064d1fb503b28dc2c4e0546aeb5f7b6d00692

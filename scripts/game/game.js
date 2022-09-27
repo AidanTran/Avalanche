@@ -14,6 +14,7 @@ class Game {
   constructor() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
     this.score = 0;
+    this.prevScore = 0;
     this.timeMilliseconds = 0;
     this.timeSeconds = 0;
     this.timeMinutes = 0;
@@ -21,6 +22,7 @@ class Game {
 
   restart() {
     this.world = new World(FRICTION, GRAVITY, WORLDWIDTH);
+    this.prevScore = this.score;
     this.score = 0;
     this.timeMilliseconds = 0;
     this.timeSeconds = 0;
@@ -127,15 +129,12 @@ class World {
     if (COUNTER >= 950) {
       //Once counter reaches a certain limit it will spawn a new block and reset
       const randBlockWidth = (Math.random() + 1) * SMBLOCKWIDTH;
-      const randBlockHeight = (Math.random() + 1) * SMBLOCKHEIGHT;
       const newFallingBlock = new FallingBlock(
         Math.random() * WORLDWIDTH - 10,
         this.player.y + this.player.height + 60,
         randBlockWidth,
-        //randBlockHeight,
         randBlockWidth, // Making the blocks square
         0,
-        //(100 / (randBlockWidth * randBlockHeight)) * BLOCKMOVESPEED // 400 is max area of block (20x20)
         (0.5 * Math.random() + 0.5) * BLOCKMOVESPEED // Random block speed independent of block size
       );
       //this.boxCollideWorld(newFallingBlock);
@@ -148,7 +147,7 @@ class World {
     let groundedFlag = false;
     let crushedFlag = false;
     for (let i = 0; i < this.boxList.length; i++) {
-      // always have a block falling until hits ground
+      // Always have a block falling until hits ground
       this.boxList[i].update(timeElapsed);
       const [tempCrushed, tempGrounded] = this.playerCollideBlock(
         this.boxList[i]

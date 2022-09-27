@@ -112,5 +112,12 @@ class Display {
         ":" +
         Math.floor(game.timeMilliseconds).toString().padStart(3, "0")
     );
+
+    // Previous Score Line
+    $("#prevScoreLine").text("Previous Run");
+    $("#prevScoreLine").css(
+      "top",
+      65 - game.prevScore + game.world.player.y + "%"
+    );
   }
 }
