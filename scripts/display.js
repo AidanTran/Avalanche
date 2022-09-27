@@ -14,7 +14,6 @@ class Display {
   initialize(game) {
     $("#player").css("width", game.world.player.width + "%");
     $("#player").css("height", game.world.player.height + "%");
-    $("#prevScoreLine").css("y", game.prevScore);
   }
 
   reset() {
@@ -99,5 +98,13 @@ class Display {
         ":" +
         Math.floor(game.timeMilliseconds).toString().padStart(3, "0")
     );
+
+    // Previous Score Line
+    $("#prevScoreLine").css(
+      "top",
+      65 - game.prevScore + game.world.player.y + "%"
+    );
+    console.log("player", game.world.player.y);
+    console.log("line", game.prevScore - game.world.player.y);
   }
 }

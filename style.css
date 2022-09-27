@@ -122,5 +122,7 @@ h2 {
 }
 
 #prevScoreLine {
+  position: absolute;
+  width: 100%;
   border-bottom: 3px solid #000000;
 }
