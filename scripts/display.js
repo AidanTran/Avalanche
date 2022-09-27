@@ -14,11 +14,25 @@ class Display {
   initialize(game) {
     $("#player").css("width", game.world.player.width + "%");
     $("#player").css("height", game.world.player.height + "%");
+    this.setAspectRatio();
   }
 
   reset() {
     this.numBoxes = 0;
     $(".boxes").remove();
+  }
+
+  setAspectRatio(){
+    let windowWidth = window.screen.width;
+    let windowHeight = window.screen.height;
+    if (windowHeight > windowWidth){
+      $("#live-game").css("width", "100vw");
+      $("#live-game").css("margin", "auto"); //centers div
+    }
+    else{
+      $("#live-game").css("height", "100vh");
+      $("#live-game").css("margin", "auto");
+    }
   }
 
   render(controller, game) {
@@ -40,7 +54,7 @@ class Display {
         '<div class="boxes" id=' + this.numBoxes.toString() + "></div>"
       ).appendTo("#live-game");
       const idStr = "#" + this.numBoxes.toString();
-      $(idStr).css("width", game.world.boxList[this.numBoxes].width + "%");
+      $(idStr).css("width", game.world.boxList[this.numBoxes].width + "%",);
       $(idStr).css("height", game.world.boxList[this.numBoxes].height + "%");
       $(idStr).css("left", game.world.boxList[this.numBoxes].x + "%");
       $(idStr).css(

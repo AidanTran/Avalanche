@@ -22,6 +22,7 @@ let update = function (timeElapsed) {
   if (timeElapsed < FRAMETHRESHOLD) {
     if (myGame.update(timeElapsed, myController)) {
       this.pause();
+      $('audio#music')[0].pause()
       $("#live-game").css("display", "none");
       $("#menu").css("display", "block");
       $("#highScore").text(
@@ -44,18 +45,22 @@ $(".start-button").on("click", function () {
   myEngine.start(); // Direct reference to myEngine here, I eventually want to get rid of that.
   $("#live-game").css("display", "block");
   $("#menu").css("display", "none");
+  $('audio#music')[0].play()
 });
 
 $(".pause-button").on("click", function () {
   if (myEngine.done) {
     myEngine.start();
+    $('audio#music')[0].play()
   } else {
     myEngine.pause();
+    $('audio#music')[0].pause()
   }
 });
 
 $(".redo-button").on("click", function () {
   myEngine.pause();
+  $('audio#music')[0].pause()
   $("#live-game").css("display", "none");
   $("#menu").css("display", "block");
 });

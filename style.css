@@ -31,9 +31,8 @@ h2 {
 /* ensures that older browsers will display HTML5 elements correctly */
 #live-game {
   position: relative;
-  width: 100vw;
-  height: 100vh;
   display: none;
+  aspect-ratio: 1;
 }
 
 #menu {
@@ -119,6 +118,7 @@ h2 {
   font-family: ArcadeClassic;
   font-size: 2rem;
   margin-right: 5px;
+<<<<<<< HEAD
 }
 
 #prevScoreLine {
@@ -129,3 +129,7 @@ h2 {
   opacity: 100%;
   font-family: "Calibri, sans-serif";
 }
+=======
+  z-index: 2;
+}
+>>>>>>> d22064d1fb503b28dc2c4e0546aeb5f7b6d00692

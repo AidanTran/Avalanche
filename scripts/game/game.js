@@ -137,6 +137,7 @@ class World {
         0,
         (0.5 * Math.random() + 0.5) * BLOCKMOVESPEED // Random block speed independent of block size
       );
+      //this.boxCollideWorld(newFallingBlock);
       this.fallingBoxes.add(this.boxList.length);
       this.boxList.push(newFallingBlock);
       COUNTER = 0;
@@ -175,7 +176,13 @@ class World {
     });
     return [crushedFlag, groundedFlag];
   }
-
+  boxCollideWorld(entity){
+    if (entity.x < 0){
+      const outsideArea = 0 - entity.x;
+      entity.width = entity.x + entity.width - outsideArea;
+      entity.x = 0;
+    }
+  }
   playerCollideWorld(entity) {
     // Takes an entity as a parameter and sets it's position and velocity so that it can't escape the world bounds.
     if (entity.x + entity.width <= 0) {
