@@ -118,7 +118,6 @@ h2 {
   font-family: ArcadeClassic;
   font-size: 2rem;
   margin-right: 5px;
-<<<<<<< HEAD
 }
 
 #prevScoreLine {
@@ -129,7 +128,3 @@ h2 {
   opacity: 100%;
   font-family: "Calibri, sans-serif";
 }
-=======
-  z-index: 2;
-}
->>>>>>> d22064d1fb503b28dc2c4e0546aeb5f7b6d00692
