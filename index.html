@@ -14,26 +14,35 @@
   </style>
 </head>
 
-<body>
+<body id="start-screen">
   <div id="menu">
-    <h1> Avalanche </h1>
-    <h2 id="highScore">Score : 0 </h2>
+    <video autoplay muted loop id="myVideo">
+      <source src="./media/Background.mp4" type="video/mp4" />
+    </video>
+    <h1>Avalanche</h1>
+    <h2 id="highScore">Last Score : 0</h2>
     <div class="start-button">
       <img src="./media/StartButton.png" alt="Start Button" />
     </div>
   </div>
   <div id="live-game">
-    <div class="pause-button in-front">
-      <img src="./media/PauseButton.png" alt="Pause Button" />
-    </div>
-    <div class="redo-button in-front">
-      <img src="./media/RestartButton.png" alt="Restart Button" />
+    <div class="button-section">
+      <div class="pause-button button">
+        <img src="./media/PauseButton.png" alt="Pause Button" />
+      </div>
+      <div class="redo-button button">
+        <img src="./media/RestartButton.png" alt="Restart Button" />
+      </div>
     </div>
     <div id="player"></div>
     <div id="floor"></div>
     <div id="lava"></div>
-    <div id="livegame-score" class="livegame-tracker"></div>
-    <div id="livegame-time" class="livegame-tracker"></div>
+
+    <div class="livegame-tracker">
+      <div id="livegame-score"></div>
+      <div id="livegame-time"></div>
+    </div>
+    <div id="prevScoreLine"></div>
   </div>
   <script src="scripts/engine.js"></script>
   <script src="scripts/game/entities.js"></script>
@@ -41,8 +50,8 @@
   <script src="scripts/display.js"></script>
   <script src="scripts/controller.js"></script>
   <script src="scripts/app.js"></script>
-  <audio id="music">
-    <source src="media/music.mp3" type="audio/mpeg">
+  <audio loop id="music">
+    <source src="media/music.mp3" type="audio/mpeg" />
   </audio>
 </body>
 
