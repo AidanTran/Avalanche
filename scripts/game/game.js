@@ -27,7 +27,6 @@ class Game {
     this.timeMilliseconds = 0;
     this.timeSeconds = 0;
     this.timeMinutes = 0;
-    console.log("restarted", this.world);
   }
 
   update(timeElapsed, controller) {
@@ -176,8 +175,8 @@ class World {
     });
     return [crushedFlag, groundedFlag];
   }
-  boxCollideWorld(entity){
-    if (entity.x < 0){
+  boxCollideWorld(entity) {
+    if (entity.x < 0) {
       const outsideArea = 0 - entity.x;
       entity.width = entity.x + entity.width - outsideArea;
       entity.x = 0;
@@ -294,7 +293,7 @@ class World {
     }
     if (bonkFlag) {
       this.player.y = block.y - this.player.height;
-      this.player.velocityY = -0.5;
+      this.player.velocityY = -1;
     }
     if (leftFlag) {
       this.player.x = block.x - this.player.width; // Pushed left

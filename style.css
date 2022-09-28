@@ -4,11 +4,11 @@
 html,
 body {
   min-height: 100%;
-  background: #fff;
-  color: #000;
   max-width: 100%;
   overflow-y: hidden;
   overflow-x: hidden;
+  font-family: ArcadeClassic;
+  color: white;
 }
 /* sets the body height of the browser, so that backgrounds and div heights work correctly. Color and background will almost certainly be altered; they are just placeholders */
 
@@ -23,16 +23,32 @@ img {
 
 h1 {
   text-align: center;
-}
-h2 {
-  text-align: center;
+  font-size: 10rem;
 }
 
-/* ensures that older browsers will display HTML5 elements correctly */
+h2 {
+  top: 40%;
+  left: 50%;
+  text-align: center;
+  font-size: 2rem;
+}
+
+#myVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -1;
+}
+
 #live-game {
   position: relative;
   display: none;
-  aspect-ratio: 1;
+  height: 100vh;
+  width: 100vw;
+  margin: auto;
+  color: black;
 }
 
 #menu {
@@ -62,7 +78,7 @@ h2 {
   opacity: 80%;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 87, 15, 0.84);
+  background-color: rgba(255, 87, 15);
   z-index: 2;
 }
 
@@ -87,38 +103,38 @@ h2 {
 
 .start-button {
   position: absolute;
-  top: 50%;
+  top: 60%;
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
   transition: 100ms all ease;
 }
 
-.pause-button {
+.button-section {
   position: absolute;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
   top: 5px;
   left: 5px;
-  width: 100px;
-  height: 100px;
+  z-index: 3;
 }
 
-.redo-button {
-  position: absolute;
-  top: 5px;
-  left: 110px;
-  width: 100px;
-  height: 100px;
+.button {
+  display: block;
+  width: min(100px, min(20vh, 20vw));
+  height: min(100px, min(20vh, 20vw));
 }
 
 .livegame-tracker {
-  position: relative;
+  position: absolute;
   text-align: right;
-  font-family: ArcadeClassic;
-  font-size: 2rem;
+  right: 0;
+  font-size: min(3rem, min(10vh, 10vw));
   margin-right: 5px;
-<<<<<<< HEAD
+  z-index: 3;
 }
 
 #prevScoreLine {
@@ -127,9 +143,5 @@ h2 {
   border-bottom: 3px solid #6a6868ec;
   border-style: none none dotted none;
   opacity: 100%;
-  font-family: "Calibri, sans-serif";
+  font-size: min(2rem, min(8vh, 8vw));
 }
-=======
-  z-index: 2;
-}
->>>>>>> d22064d1fb503b28dc2c4e0546aeb5f7b6d00692
