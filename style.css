@@ -4,18 +4,18 @@
 html,
 body {
   min-height: 100%;
-  background: darkolivegreen;
-  color: #fff;
   max-width: 100%;
   overflow-y: hidden;
   overflow-x: hidden;
   font-family: ArcadeClassic;
+  color: white;
 }
 /* sets the body height of the browser, so that backgrounds and div heights work correctly. Color and background will almost certainly be altered; they are just placeholders */
 
 body {
   margin: 0;
 }
+
 
 img {
   max-width: 100%;
@@ -24,11 +24,23 @@ img {
 
 h1 {
   text-align: center;
-}
-h2 {
-  text-align: center;
+  font-size: 10rem;
 }
 
+h2 {
+  top: 40%;
+  left: 50%;
+  text-align: center;
+  font-size: 2rem;
+}
+
+#myVideo{
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%; 
+  min-height: 100%;
+}
 #live-game-parent {
   display: flex;
   height: 100vh;
@@ -52,7 +64,7 @@ h2 {
   height: min(100vw, 100vh);
   width: min(100vw, 100vh);
   margin: auto;
-  outline: max(100vw, 100vh) solid darkolivegreen;
+  outline: max(100vw, 100vh) solid black;
   z-index: 10;
   pointer-events: none;
 }
@@ -109,12 +121,12 @@ h2 {
 
 .start-button {
   position: absolute;
-  top: 50%;
+  top: 60%;
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
   transition: 100ms all ease;
 }
 
@@ -149,5 +161,4 @@ h2 {
   border-bottom: 3px solid #6a6868ec;
   border-style: none none dotted none;
   opacity: 100%;
-  font-family: "Calibri, sans-serif";
 }

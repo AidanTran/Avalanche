@@ -100,7 +100,7 @@ class Display {
     );
 
     // Previous Score Line
-    $("#prevScoreLine").text("Previous Run");
+    $("#prevScoreLine").text("PREVIOUS SCORE");
     $("#prevScoreLine").css(
       "top",
       65 - game.prevScore + game.world.player.y + "%"
