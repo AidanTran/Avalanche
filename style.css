@@ -64,7 +64,7 @@ h2 {
   height: min(100vw, 100vh);
   width: min(100vw, 100vh);
   margin: auto;
-  outline: max(100vw, 100vh) solid black;
+  outline: max(100vw, 100vh) solid rgb(60, 16, 153);
   z-index: 10;
   pointer-events: none;
 }
