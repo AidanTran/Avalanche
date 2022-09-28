@@ -27,7 +27,6 @@ class Game {
     this.timeMilliseconds = 0;
     this.timeSeconds = 0;
     this.timeMinutes = 0;
-    console.log("restarted", this.world);
   }
 
   update(timeElapsed, controller) {
