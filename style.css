@@ -41,32 +41,14 @@ h2 {
   min-height: 100%;
   z-index: -1;
 }
-#live-game-parent {
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-}
 
-/* ensures that older browsers will display HTML5 elements correctly */
 #live-game {
   position: relative;
   display: none;
-  height: min(100vw, 100vh);
-  width: min(100vw, 100vh);
+  height: 100vh;
+  width: 100vw;
   margin: auto;
   color: black;
-}
-
-#live-game::after {
-  content: "";
-  position: absolute;
-  display: block;
-  height: min(100vw, 100vh);
-  width: min(100vw, 100vh);
-  margin: auto;
-  outline: max(100vw, 100vh) solid rgb(60, 16, 153);
-  z-index: 10;
-  pointer-events: none;
 }
 
 #menu {
@@ -161,4 +143,5 @@ h2 {
   border-bottom: 3px solid #6a6868ec;
   border-style: none none dotted none;
   opacity: 100%;
+  font-size: min(2rem, min(8vh, 8vw));
 }
