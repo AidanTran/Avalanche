@@ -53,8 +53,23 @@ h2 {
 
 #menu {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
   width: 100vw;
   height: 100vh;
+}
+
+#menu h1 {
+  font-size: min(15rem, 18vw);
+  margin: 1rem;
+}
+
+#menu h2 {
+  font-size: min(8em, 10vw);
+  margin: 1rem;
 }
 
 #player {
@@ -102,14 +117,8 @@ h2 {
 }
 
 .start-button {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
   width: 70px;
   height: 70px;
-  transition: 100ms all ease;
 }
 
 .button-section {
@@ -124,15 +133,15 @@ h2 {
 
 .button {
   display: block;
-  width: min(100px, min(20vh, 20vw));
-  height: min(100px, min(20vh, 20vw));
+  width: min(150px, 20vw);
+  height: min(150px, 20vw);
 }
 
 .livegame-tracker {
   position: absolute;
   text-align: right;
   right: 0;
-  font-size: min(3rem, min(10vh, 10vw));
+  font-size: min(4rem, 10vw);
   margin-right: 5px;
   z-index: 3;
 }
